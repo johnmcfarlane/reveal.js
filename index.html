@@ -36,7 +36,7 @@
 					</div>
 				</section>
 
-				<!--section>
+				<section>
 					<h2>1. P0828R1: <code>elastic_integer</code></h2>
 				</section>
 				<section>
@@ -100,7 +100,7 @@ ret</code></pre>
 				</section>
 				<section data-transition="none-in none-out">
 					<h3>The Operators</h3>
-					<p>native promotion to int width is the default</p>
+					<p>native promotion to <code>int</code> width is observed</p>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
 							<pre><code style="c++">auto a = elastic_integer&lt;signed char>{100};
@@ -278,7 +278,7 @@ using wide_elastic_integer = elastic_integer&lt;wide_integer&lt;Digits, Narrowes
 							<li><code>is_signed_v</code>/<code>is_unsigned_v</code></li>
 						</ul>
 					</ul>
-				</section-->
+				</section>
 
 
 				<!--section>P0828R1: elastic_integer <http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0828r1.html>
@@ -311,7 +311,7 @@ private:
 					<p>like a span of digits over a number</p>
 					<div><code style="c++">fixed_point&lt;short, -8, 2> a = 10.75</code></div>
 					<div><code style="font-size: 85%">
-						<span style="opacity:0.25">…000000000000</span>+0001010.11000000<span style="opacity:0.25">000000000000…</span>
+						<span style="opacity:0.25">…000000000000</span>00001010.11000000<span style="opacity:0.25">000000000000…</span>
 					</code></div>
 				</section>
 
@@ -747,21 +747,33 @@ using elastic_fixed_point =
 				</section>
 
 				<section>
-					<h3>Replacing <code>float</code></h3>
+					<h3>An alternative to <code>float</code></h3>
 					<ul>
-						<li><code>float</code> uses as much as 10× silicon and energy</li>
+						<li>floating-point uses as much as 10× silicon and energy</li>
+						<li>fixed-point is sometimes faster, sometimes slower</li>
 						<li>Applications include finance, CNNs, FPGAs, DSPs</li>
-						<li>Modelling of systems with determinism and tight control over information loss</li>
+						<li>Plus modelling of systems with determinism and tight control over precision</li>
 					</ul>
 				</section>
 
 				<section>
-					<h3>Replacing <code>float</code></h3>
+					<h3>An alternative to <code>float</code></h3>
 					<ul>
-						<li><code>fixed_point</code> is a scaled integer, not a budget <code>float</code></li>
-						<li>'quasi-exact' division (<a href="http://wg21.link/p1368">P1368</a>) requires additional plumbing</li>
+						<li>A scaled integer is *not* a budget <code>float</code></li>
+						<li>'Quasi-exact' division (<a href="http://wg21.link/p1368">P1368</a>) is desirable at some level,
+							possibly in a type that uses <code>fixed_point</code></li>
 						<li>'surprising' (i.e. Euclidean) division makes sense once you consider finance:</li>
 						<code>using usd = fixed_point&lt;int, -2, 10></code>
+					</ul>
+				</section>
+
+				<section>
+					<h3>Late-breaking Changes</h3>
+					<ul>
+						<li>Avoid use of name <code>fixed_point</code>: carries baggage from P0106</li>
+						<li>Replace <code>fixed_point</code> type with <code>scaled_integer</code></li>
+						<li>Replaces <code>Rep</code> and <code>Exponent</code> with <code>Scale</code></li>
+						<li><code>Scale</code> is a concept that includes <code>ratio</code></li>
 					</ul>
 				</section>
 
@@ -777,9 +789,13 @@ using elastic_fixed_point =
 					- merits of quasi-exact division, but also the problems with it (mostly performance)
 					- possibility of tagged division (mostly a reference to P1050)
 
-					- the difficult second parameter
+					- the difficult second parameter-->
 
-					P0554R0: composition <http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0554r0.html>
+				<section>
+					<h2>3. P0554R0: Composition</h2>
+				</section>
+
+				<!--P0554R0: composition <http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0554r0.html>
 					- fixed-point can easily overflow due to scale change (e.g., probabilities)
 					- fixed-point may or may not need rounding
 					- over-wide integers are useful unto themselves (e.g., for cryptography)
