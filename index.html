@@ -198,19 +198,18 @@ ret</code></pre>
 					<p>How operands affect width of result:</p>
 					<ul>
 						<ul>
-							<li>widen: <code>+</code>, <code>-</code>, <code>*</code><sup>†</sup>, <code><<</code><sup>††</sup></li>
-							<li>narrow: <code>>></code><sup>††</sup></li>
-							<li>wider operand: <code>|</code>, <code>^</code>, <code><=></code> etc.</li>
+							<li>widen: <code>+</code>, <code>-</code>, <code>*</code>, <code><<</code><sup>†</sup></li>
+							<li>narrow: <code>>></code><sup>†</sup></li>
+							<li>wider operand: <code>|</code>, <code>^</code></li>
 							<li>narrower operand: <code>&</code>, <code>%</code></li>
 							<li>same: <code>=</code>, <code>@=</code>, <code>++</code>, <code>--</code>, <code>~</code>, </li>
-							<li>Boolean: <code>&&</code>, <code>||</code>
+							<li>Boolean: <code>&&</code>, <code>||</code>, <code><=></code> etc.</li>
 							<li>1st operand: <code>/</code></li>
 						</ul>
 					</ul>
 					<ul style="font-size: 50%">
 						<li>There's a separate set of rules for signedness of result</li>
-						<li><sup>†</sup>binary</li>
-						<li><sup>††</sup>when 2nd operand is <code>integral_constant</code></li>
+						<li><sup>†</sup>when 2nd operand is <code>integral_constant</code></li>
 					</ul>
 				</section>
 
@@ -221,7 +220,7 @@ ret</code></pre>
 						<li>assignment</li>
 						<li>conversion</li>
 						<li>bitwise shift<sup>†</sup></li>
-						<li>compound assignment</li>
+						<li>some compound assignment</li>
 						<li>increment/decrement</li>
 					</ul></div>
 					<p style="font-size: 50%"><sup>†</sup>unless 2nd operand is <code>integral_constant</code></p>
@@ -238,6 +237,7 @@ class overflow_integer;
 // a type that widens when it can, and traps when it can't
 template&lt;class Rep>
 using safe_integer = overflow_integer&lt;elastic_integer&lt;Rep>>;</code></pre>
+					<p>Covered in P0554</p>
 				</section>
 
 				<section>
@@ -249,7 +249,8 @@ class wide_integer;
 
 // a type that widens arbitrarily with precise 'bit tracking'
 template&lt;int Digits, class Narrowest>
-using wide_elastic_integer = elastic_integer&lt;wide_integer&lt;Digits, Narrowest>>;</code></pre>
+using wide_elastic_integer =
+    elastic_integer&lt;wide_integer&lt;Digits, Narrowest>>;</code></pre>
 				</section>
 
 				<section style="text-align: left">
@@ -302,16 +303,29 @@ public:
   using rep = Rep;
   ...
 private:
-  rep rep_;  // value is rep_*2^Exponent
+  rep rep_;  // value is rep_*Radix^Exponent
 };</code></pre>
 				</section>
 
 				<section>
 					<h3>The Type</h3>
-					<p>like a span of digits over a number</p>
-					<div><code style="c++">fixed_point&lt;short, -8, 2> a = 10.75</code></div>
+					<p>Like a span of digits over a number...</p>
+					&nbsp;
+					<div><code style="c++">fixed_point&lt;short, -8> a = 10.75</code></div>
+					&nbsp;
 					<div><code style="font-size: 85%">
 						<span style="opacity:0.25">…000000000000</span>00001010.11000000<span style="opacity:0.25">000000000000…</span>
+					</code></div>
+				</section>
+
+				<section>
+					<h3>The Type</h3>
+					<p>Becomes an integer when <code>Exponent=0</code>...</p>
+					&nbsp;
+					<div><code style="c++">fixed_point&lt;int, 0> b = 42</code></div>
+					&nbsp;
+					<div><code style="font-size: 85%">
+						<span style="opacity:0.25">…0000000</span>00000000000000000000000000101010.<span style="opacity:0.25">0000000…</span>
 					</code></div>
 				</section>
 
@@ -679,7 +693,7 @@ class tracked_integer;
 template&lt;class Rep>
 class elastic_integer;
 
-template&lt;int Digits, int Exponent, int Narrowest=int>
+template&lt;int Digits, int Exponent, typename Narrowest=int>
 using elastic_fixed_point =
     fixed_point&lt;
         elastic_integer&lt;
@@ -688,7 +702,7 @@ using elastic_fixed_point =
 					</div>
 				</section>
 
-				<section data-transition="slide-in slide-out">
+				<section data-transition="slide-in fade-out">
 					<h3>Lossless Multiplication</h3>
 					<p>No risk of overflow; no loss of precision<a href="https://godbolt.org/z/PPesiD">.</a></p>
 					<div style="display: flex; font-size: 80%">
@@ -739,6 +753,72 @@ using elastic_fixed_point =
 	ret</code></pre>
 						</div>
 					</div>
+				</section>
+
+				<section data-transition="fade-in slide-out">
+					<h3>Lossless Multiplication</h3>
+					<p>Wrapper over simple integer arithmetic<a href="https://godbolt.org/z/0RQ5YD">.</a></p>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 60%">
+							<pre><code style="c++">constexpr auto add(int l,
+                   int r) {
+
+    return (long long)l+r;
+}</code></pre>
+						</div>
+						<div style="flex: 40%">
+							<pre><code style="c++">add:
+	movsx   rsi, esi
+	movsx   rax, edi
+	add     rax, rsi
+	ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 60%">
+							<pre><code style="c++">auto mult(int l,
+          int r) {
+
+    return (long long)l*r;
+}</code></pre>
+						</div>
+						<div style="flex: 40%">
+							<pre><code style="c++">mult:
+	movsx   rax, esi
+	movsx   rdi, edi
+	imul    rax, rdi
+	ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 60%">
+							<pre><code style="c++">auto divide(int l,
+            int r) {
+
+    return l/r;
+}</code></pre>
+						</div>
+						<div style="flex: 40%">
+							<pre><code style="c++">divide:
+	mov     eax, edi
+	cdq
+	idiv    esi
+	ret</code></pre>
+						</div>
+					</div>
+				</section>
+
+				<section>
+					<h3>Euclidean Division vs 'Quasi-Exact' Division</h3>
+					<p>See P1368R0 for details of these</p>
+					<ul>
+						<li>Quasi-exact division pre-widens dividend</li>
+						<li>Avoids imprecise results where possible</li>
+						<li>Typically <i>feels</i> like floating-point division</li>
+						<li><code>fixed_point</code> supports, but not for <code>operator/</code></li>
+					</ul>
+					<code><p>Quotient<sub>i</sub> = Dividend<sub>i</sub>+Divisor<sub>f</sub></p>
+					<p>Quotient<sub>f</sub> = Dividend<sub>f</sub>+Divisor<sub>i</sub></p></code>
 				</section>
 
 				<section>
@@ -844,7 +924,7 @@ using elastic_fixed_point =
 					<ul style="font-size: 90%">
 						<li>Run-time handling of out-of-range errors</li>
 						<li>More consistent promotion rules to prevent range errors</li>
-						<li>Arbitrary width numbers</li>
+						<li>Arbitrary-width numbers</li>
 						<li>Scaled integers to approximate real numbers</li>
 						<li>'Quasi-exact' division of fixed-point numbers</li>
 						<li>Alternative rounding strategies to improve precision</li>
