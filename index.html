@@ -195,8 +195,8 @@ ret</code></pre>
 
 				<section style="text-align: left">
 					<h3>The Operators</h3>
+					<p>How operands affect width of result:</p>
 					<ul>
-						<li>How operands affect width of result:</li>
 						<ul>
 							<li>widen: <code>+</code>, <code>-</code>, <code>*</code><sup>†</sup>, <code><<</code><sup>††</sup></li>
 							<li>narrow: <code>>></code><sup>††</sup></li>
@@ -244,11 +244,11 @@ using safe_integer = overflow_integer&lt;elastic_integer&lt;Rep>>;</code></pre>
 					<h3>Further Composition</h3>
 					<p>static arbitrarily wide integer</p>
 					<pre><code style="c++">// similar type to P0539
-template&ltint Digits, typename Narrowest>
+template&ltint Digits, class Narrowest>
 class wide_integer;
 
 // a type that widens arbitrarily with precise 'bit tracking'
-template&lt;int Digits, typename Narrowest>
+template&lt;int Digits, class Narrowest>
 using wide_elastic_integer = elastic_integer&lt;wide_integer&lt;Digits, Narrowest>>;</code></pre>
 				</section>
 
@@ -288,7 +288,7 @@ using wide_elastic_integer = elastic_integer&lt;wide_integer&lt;Digits, Narrowes
 					- width tracked either by elastic_integer itself or by its (immediate) underlying type
 					-->
 
-				<section>
+					<section>
 					<h2>2. P0037R6: <code>fixed_point</code></h2>
 				</section>
 				<section>
@@ -317,7 +317,7 @@ private:
 
 				<section data-transition="slide-in none-out">
 					<h3>Conversion</h3>
-					<p><code></code>conversion to/from integer/floating point scales</p>
+					<p><code></code>conversion to/from integer scales</p>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 50%">
 							<pre><code style="c++">fixed_point&lt;int, -16> from_int(int n)
@@ -464,9 +464,8 @@ private:
 				</section>
 
 				<section data-transition="slide-in fade-out">
-					<!--https://godbolt.org/z/lSvmsl-->
 					<h3>The Operators</h3>
-					<p>arithmetic overloads are pass-throughs</p>
+					<p>Arithmetic overloads are pass-throughs<a href="https://godbolt.org/z/lSvmsl">.</a></p>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 50%">
 							<pre><code style="c++">auto add(int l,
@@ -514,9 +513,8 @@ private:
 					</div>
 				</section>
 				<section data-transition="fade">
-					<!--https://godbolt.org/z/MamRWT-->
 					<h3>The Operators</h3>
-					<p>arithmetic overloads are pass-throughs</p>
+					<p>Arithmetic overloads are pass-throughs<a href="https://godbolt.org/z/MamRWT">.</a></p>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 50%">
 							<pre><code style="c++">auto add(fixed_point&lt;int, -8> l,
@@ -564,9 +562,8 @@ private:
 					</div>
 				</section>
 				<section data-transition="fade">
-					<!--https://godbolt.org/z/MamRWT-->
 					<h3>The Operators</h3>
-					<p>multiplication is lossless but susceptible to overflow</p>
+					<p>Multiplication is lossless but susceptible to overflow<a href="https://godbolt.org/z/MamRWT">.</a></p>
 					<div style="display: flex; font-size: 80%; opacity: .4">
 						<div style="flex: 50%">
 							<pre><code style="c++">auto add(fixed_point&lt;int, -8> l,
@@ -614,9 +611,8 @@ private:
 					</div>
 				</section>
 				<section data-transition="fade-in slide-out">
-					<!--https://godbolt.org/z/MamRWT-->
 					<h3>The Operators</h3>
-					<p>division is surprising</p>
+					<p>Division is surprising<a href="https://godbolt.org/z/MamRWT">.</a></p>
 					<div style="display: flex; font-size: 80%; opacity: .4">
 						<div style="flex: 50%">
 							<pre><code style="c++">auto add(fixed_point&lt;int, -8> l,
@@ -677,10 +673,10 @@ private:
 				<section>
 					<h3>Lossless Multiplication</h3>
 					<div>
-							<pre><code style="c++">template&lt;int Digits, typename Narrowest=int>
+							<pre><code style="c++">template&lt;int Digits, class Narrowest=int>
 class tracked_integer;
 
-template&lt;typename Rep>
+template&lt;class Rep>
 class elastic_integer;
 
 template&lt;int Digits, int Exponent, int Narrowest=int>
@@ -693,10 +689,9 @@ using elastic_fixed_point =
 				</section>
 
 				<section data-transition="slide-in slide-out">
-					<!--https://godbolt.org/z/PPesiD-->
 					<h3>Lossless Multiplication</h3>
-					<p>no risk of overflow; no loss of precision</p>
-					<div style="display: flex; font-size: 80%; opacity: .4">
+					<p>No risk of overflow; no loss of precision<a href="https://godbolt.org/z/PPesiD">.</a></p>
+					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
 							<pre><code style="c++">auto add(elastic_fixed_point&lt;31, -16> l,
          elastic_fixed_point&lt;31, -16> r) {
@@ -712,7 +707,7 @@ using elastic_fixed_point =
 	ret</code></pre>
 						</div>
 					</div>
-					<div style="display: flex; font-size: 80%; opacity: .4">
+					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
 							<pre><code style="c++">auto mult(elastic_fixed_point&lt;31, -16> l,
           elastic_fixed_point&lt;31, -16> r) {
@@ -747,7 +742,7 @@ using elastic_fixed_point =
 				</section>
 
 				<section>
-					<h3>An alternative to <code>float</code></h3>
+					<h3>As an alternative to <code>float</code></h3>
 					<ul>
 						<li>floating-point uses as much as 10× silicon and energy</li>
 						<li>fixed-point is sometimes faster, sometimes slower</li>
@@ -757,9 +752,9 @@ using elastic_fixed_point =
 				</section>
 
 				<section>
-					<h3>An alternative to <code>float</code></h3>
+					<h3>As an alternative to <code>float</code></h3>
 					<ul>
-						<li>A scaled integer is *not* a budget <code>float</code></li>
+						<li>A scaled integer is <em>not</em> a budget <code>float</code></li>
 						<li>'Quasi-exact' division (<a href="http://wg21.link/p1368">P1368</a>) is desirable at some level,
 							possibly in a type that uses <code>fixed_point</code></li>
 						<li>'surprising' (i.e. Euclidean) division makes sense once you consider finance:</li>
@@ -793,6 +788,161 @@ using elastic_fixed_point =
 
 				<section>
 					<h2>3. P0554R0: Composition</h2>
+				</section>
+				<section>
+					<h2>Background</h2>
+					<ul style="font-size: 75%">
+						<li>Two competing fixed-point papers presented in Jacksonville 2016:</li>
+						<ul>
+							<li>P0106R0 proposed few types that each parcelled many features together</li>
+							<li>P0037R1 proposed a single type which addressed a single concern</li>
+						</ul>
+						<li>SG6 <a href="http://wiki.edg.com/bin/view/Wg21jacksonville/SG6Minutes">asked</a> authors to coordinate</li>
+						<li>P0554 was written to explain:</li>
+						<ul>
+							<li>why numeric types should address a single concern</li>
+							<li>how they could be combined to address multiple concerns</li>
+							<li>what the individual concerns (and therefore types) are</li>
+						</ul>
+						<li>Was <a href="http://wiki.edg.com/bin/view/Wg21kona2017/SG6HigherTypes?twiki_redirect_cache=c0a8ceb79922fe972b3c4dbe2f8a42c3">presented</a> in Kona 2017</li>
+						<li>Fell off the radar</li>
+						<li>Details are out of date but the paper is still relevant</li>
+						<li>Provides a context for P0037 and P0828</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Motivation</h2>
+					<ul>
+						<li>Subject is fixed size numeric types</li>
+						<li>A well established list of concerns exists</li>
+						<li>They typically enhance integers in some way</li>
+						<li>Make them class templates with integer as parameter</li>
+						<li>Allows any 3rd-party or non-standard integers to be used</li>
+						<li>Allows chaining of one type </i>within</i> another to build up functionality</li>
+						<li>Referred to as the <i>Compositional</i> approach</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Composition</h2>
+					<ul style="font-size: 90%">
+						<li>Components are any numeric types</li>
+						<li>Can be used as parameters in compositional types</li>
+						<li>These in turn make them components</li>
+						<li>Components can be chained together to make composites</li>
+						<li>Not all combinations work or are useful</li>
+						<li>A named set of components is proposed</li>
+						<li>Ultimate goal (for some) is a pair of composites</li>
+						<ul>
+							<li><code>static_integer</code> - an alternative to fundamental integer types</li>
+							<li><code>static_number</code> - an alternative to fundamental floating-point types</li>
+						</ul>
+					</ul>
+				</section>
+				<section>
+					<h2>Concerns</h2>
+					<p>The main concerns to be addressed:</p>
+					<ul style="font-size: 90%">
+						<li>Run-time handling of out-of-range errors</li>
+						<li>More consistent promotion rules to prevent range errors</li>
+						<li>Arbitrary width numbers</li>
+						<li>Scaled integers to approximate real numbers</li>
+						<li>'Quasi-exact' division of fixed-point numbers</li>
+						<li>Alternative rounding strategies to improve precision</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Out-of-range<sup>†</sup> Handling</h2>
+					<div><pre><code style="c++">template&lt;class Rep, class Tag = contract_tag>
+class fixed_width_integer;
+
+// makes out-of-range a post-condition violation
+struct contract_tag;
+
+// clamps out-of-range values to minimum/maximum value
+struct saturate_tag;
+
+// wraps out-of-range value a la unsigned
+struct modulo_tag;</code></pre></div>
+					<p style="font-size: 50%"><sup>†</sup>Overflow is a problematic term because unsigned integers don't overflow.</p>
+				</section>
+				<section>
+					<h2>Out-of-range Avoidance</h2>
+					<p>Subject of P0828</p>
+					<div><pre><code style="c++">template&lt;class Rep>
+class promotion_integer;</code></pre></div>
+				</section>
+				<section>
+					<h2>Wide Integers</h2>
+					<p>A.K.A. fixed size bignum; associated with multi-word</p>
+					<div><pre><code style="c++">template&lt;int Digits, class Narrowest>
+class promotion_integer;</code></pre></div>
+					<p style="text-align: left; font-size: 50%"><code>Narrowest</code> denotes the least wide representational type to use.
+						For example, <code>wide_integer&lt;12, short></code>, would fit into 2 bytes.
+						However, <code>wide_integer&lt;24, short></code>, would use at least 4 bytes.</p>
+				</section>
+				<section>
+					<h2>Scaled Integers</h2>
+					<p style="font-size: 75%">This includes <code>fixed_point</code> but also describes something much like <code>chrono::duration</code>.</p>
+					<div><pre><code style="c++">template&lt;class Rep, class Scale>
+class scaled_integer;
+
+template&lt;intmax_t Exponent=0, int Radix=2>
+class power_scale;
+
+template&lt;class Rep, intmax_t Exponent=0, int Radix=2>
+using fixed_point = scaled_integer&lt;Rep, power_scale&lt;Exponent, Radix>>;
+
+// illustration purposes only
+template&lt;class Rep, class Period = ratio<1>>
+using duration = scaled_integer&lt;Rep, Period>;</code></pre></div>
+					<p style="font-size: 75%">Other examples include closed range units such as 8-bit color components
+						which express the range [0..1] using [0..255].</p>
+				</section>
+				<section>
+					<h2>Rounding<sup>†</sup></h2>
+					<p>float-to-int, right-shift and division all handle precision loss in their own special way.</p>
+					<div><pre><code style="c++">template&lt;class Rep, class Tag = nearest_tag>
+class rounding_integer;
+
+struct nearest_tag;     // traditional round-to-nearest
+struct native_tag;      // do whatever Rep 'wants'
+struct truncate_tag;    // lop off the fractional part
+struct round_down_tag;  // toward -ve infinity
+// etc.</code></pre></div>
+				</section>
+				<section>
+					<h2>Composite Type</h2>
+					<p><code>static_integer</code> is similar to P0106's <code>integral</code>.</p>
+					<div><pre><code style="c++">template&lt;
+    int Digits = digits&lt;int>::value,
+    class RoundingTag = nearest_rounding_tag,
+    class OverflowTag = undefined_overflow_tag,
+    class Narrowest = int>
+using static_integer = rounding_integer&lt;
+  fixed_width_integer&lt;
+    promotion_integer&lt;
+      wide_integer&lt;
+        Digits,
+        Narrowest>>,
+      OverflowTag>,
+  RoundingTag>;</code></pre></div>
+				</section>
+				<section>
+					<h2>Composite Type</h2>
+					<p><code>static_number</code> is similar to P0106's <code>negatable</code>.</p>
+					<div><pre><code style="c++">template&lt;
+    int Digits,
+    int Exponent = 0,
+    class RoundingTag = nearest_rounding_tag,
+    class OverflowTag = undefined_overflow_tag,
+    class Narrowest = int>
+using static_number = fixed_point&lt;
+  static_integer&lt;
+    Digits,
+    RoundingTag,
+    OverflowTag,
+    Narrowest>,
+  Exponent>;</code></pre></div>
 				</section>
 
 				<!--P0554R0: composition <http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0554r0.html>
