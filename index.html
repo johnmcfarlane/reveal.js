@@ -283,10 +283,10 @@ using wide_elastic_integer =
 
 
 				<!--section>P0828R1: elastic_integer <http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0828r1.html>
-					- corresponds to x86 multiplication
-					- remember that width growth is exponential only on iterated diamond graph
-					- note impossibility of raising to a non-constant power or accumulating without shifting and rounding
-					- width tracked either by elastic_integer itself or by its (immediate) underlying type
+					 - corresponds to x86 multiplication
+					 - remember that width growth is exponential only on iterated diamond graph
+					 - note impossibility of raising to a non-constant power or accumulating without shifting and rounding
+					 - width tracked either by elastic_integer itself or by its (immediate) underlying type
 					-->
 
 					<section>
@@ -760,7 +760,7 @@ using elastic_fixed_point =
 					<p>Wrapper over simple integer arithmetic<a href="https://godbolt.org/z/0RQ5YD">.</a></p>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
-							<pre><code style="c++">constexpr auto add(int l,
+							<pre><code style="c++">auto add(int l,
                    int r) {
 
     return (long long)l+r;
@@ -955,7 +955,7 @@ class promotion_integer;</code></pre></div>
 					<h2>Wide Integers</h2>
 					<p>A.K.A. fixed size bignum; associated with multi-word</p>
 					<div><pre><code style="c++">template&lt;int Digits, class Narrowest>
-class promotion_integer;</code></pre></div>
+class wide_integer;</code></pre></div>
 					<p style="text-align: left; font-size: 50%"><code>Narrowest</code> denotes the least wide representational type to use.
 						For example, <code>wide_integer&lt;12, short></code>, would fit into 2 bytes.
 						However, <code>wide_integer&lt;24, short></code>, would use at least 4 bytes.</p>
@@ -979,7 +979,7 @@ using duration = scaled_integer&lt;Rep, Period>;</code></pre></div>
 						which express the range [0..1] using [0..255].</p>
 				</section>
 				<section>
-					<h2>Rounding<sup>†</sup></h2>
+					<h2>Rounding</h2>
 					<p>float-to-int, right-shift and division all handle precision loss in their own special way.</p>
 					<div><pre><code style="c++">template&lt;class Rep, class Tag = nearest_tag>
 class rounding_integer;
@@ -1026,6 +1026,13 @@ using static_number = fixed_point&lt;
 				</section>
 
 				<!--P0554R0: composition <http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0554r0.html>
+
+					- Start with any numeric type
+					- Use it as a parameter in a compositional template
+					- The result is a numeric type
+					- Chain several templates as needed
+					- Not all combinations...
+
 					- fixed-point can easily overflow due to scale change (e.g., probabilities)
 					- fixed-point may or may not need rounding
 					- over-wide integers are useful unto themselves (e.g., for cryptography)
