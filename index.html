@@ -39,27 +39,42 @@
 				<section>
 					<h2>1. P0828R1: <code>elastic_integer</code></h2>
 				</section>
-				<section>
+				<section data-transition="slide-in fade-out">
 					<h3>The Type</h3>
-					<p>integer type that <em>generalizes promotion</em> to avoid overflow</p>
+					<p>integer that <em>generalizes promotion</em> to avoid overflow<code></code></p>
 					<pre><code class="c++">template&lt;int Digits, class Narrowest>
 class elastic_integer {
-  static constexpr num_digits_ = max(digits_v&lt;Narrowest>, Digits);
+  // the actual number of digits allocated
+  static constexpr int digits_ = ...;
 public:
-  using rep = set_digits_t&lt;Narrowest, num_digits_>;
-  ...
+  using rep = set_digits_t&lt;Narrowest, digits_>;
+  // ...
+private:
+  rep rep_;
+};</code></pre>
+				</section>
+				<section data-transition="fade-in slide-out">
+					<h3>The Type</h3>
+					<p>The gory details of <code>rep</code><a href="https://godbolt.org/z/wd9TNn">.</a></p>
+					<pre><code class="c++">template&lt;int Digits, class Narrowest>
+class elastic_integer {
+  static constexpr int min_digits_ = digits_v&lt;Narrowest>;
+  static constexpr int digits_ = max(min_digits_, Digits);
+public:
+  using rep = set_digits_t&lt;Narrowest, digits_>;
+  // ...
 private:
   rep rep_;
 };</code></pre>
 				</section>
 				<section data-transition="slide-in none-out">
 					<h3>The Operators</h3>
-					<p>operands promoted to prevent overflow</p>
+					<p>operands promoted to prevent overflow<code></code></p>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
 							<pre><code class="c++">auto a = elastic_integer&lt;7>{100};
 
-// elastic_integer&lt;7>{10000} w rep=int
+// elastic_integer&lt;14>, uses int32_t
 auto b = a*a;
 </code></pre>
 						</div>
@@ -72,9 +87,9 @@ ret</code></pre>
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
-							<pre><code class="c++">auto c = elastic_integer&lt;15>{1000};
+							<pre><code class="c++">auto c = elastic_integer&lt;15>{10000};
 
-// elastic_integer&lt;15>{1000000} w rep=int
+// elastic_integer&lt;30>, uses int32_t
 auto d = c*c;</code></pre>
 						</div>
 						<div style="flex: 40%">
@@ -86,9 +101,9 @@ ret</code></pre>
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
-							<pre><code class="c++">auto e = elastic_integer&lt;31>{1000000};
+							<pre><code class="c++">auto e = elastic_integer&lt;31>{1000000000};
 
-// elastic_integer&lt;31>{1000000000000LL} w rep=long long
+// elastic_integer&lt;62>, uses int64_t
 auto f = e*e;</code></pre>
 						</div>
 						<div style="flex: 40%">
@@ -106,7 +121,7 @@ ret</code></pre>
 						<div style="flex: 60%">
 							<pre><code class="c++">auto a = elastic_integer&lt;7>{100};
 
-// elastic_integer&lt;7>{10000} w rep=int
+// elastic_integer&lt;14>, uses int32_t
 auto b = a*a;
 </code></pre>
 						</div>
@@ -119,9 +134,9 @@ ret</code></pre>
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
-							<pre><code class="c++">auto c = elastic_integer&lt;15>{1000};
+							<pre><code class="c++">auto c = elastic_integer&lt;15>{10000};
 
-// elastic_integer&lt;15>{1000000} w rep=int
+// elastic_integer&lt;30>, uses int32_t
 auto d = c*c;</code></pre>
 						</div>
 						<div style="flex: 40%">
@@ -133,9 +148,9 @@ ret</code></pre>
 					</div>
 					<div style="display: flex; font-size: 80%; opacity:.4">
 						<div style="flex: 60%">
-							<pre><code class="c++">auto e = elastic_integer&lt;31>{1000000};
+							<pre><code class="c++">auto e = elastic_integer&lt;31>{1000000000};
 
-// elastic_integer&lt;long long>{1000000000000LL}
+// elastic_integer&lt;62>, uses int64_t
 auto f = e*e;</code></pre>
 						</div>
 						<div style="flex: 40%">
@@ -148,12 +163,12 @@ ret</code></pre>
 				</section>
 				<section data-transition="fade-in slide-out">
 					<h3>The Operators</h3>
-					<p>further promotion happens when necessary</p>
+					<p>further promotion happens when necessary<code></code></p>
 					<div style="display: flex; font-size: 80%; opacity:.4">
 						<div style="flex: 60%">
 							<pre><code class="c++">auto a = elastic_integer&lt;7>{100};
 
-// elastic_integer&lt;7>{10000} w rep=int
+// elastic_integer&lt;14>, uses int32_t
 auto b = a*a;
 </code></pre>
 						</div>
@@ -166,9 +181,9 @@ ret</code></pre>
 					</div>
 					<div style="display: flex; font-size: 80%; opacity:.4">
 						<div style="flex: 60%">
-							<pre><code class="c++">auto c = elastic_integer&lt;15>{1000};
+							<pre><code class="c++">auto c = elastic_integer&lt;15>{10000};
 
-// elastic_integer&lt;15>{1000000} w rep=int
+// elastic_integer&lt;30>, uses int32_t
 auto d = c*c;</code></pre>
 						</div>
 						<div style="flex: 40%">
@@ -180,9 +195,9 @@ ret</code></pre>
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
-							<pre><code class="c++">auto e = elastic_integer&lt;31>{1000000};
+							<pre><code class="c++">auto e = elastic_integer&lt;31>{1000000000};
 
-// elastic_integer&lt;31>{1000000000000LL} w rep=long long
+// elastic_integer&lt;62>, uses int64_t
 auto f = e*e;</code></pre>
 						</div>
 						<div style="flex: 40%">
