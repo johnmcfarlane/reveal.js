@@ -281,15 +281,7 @@ using wide_elastic_integer =
 					</ul>
 				</section>
 
-
-				<!--section>P0828R1: elastic_integer <http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0828r1.html>
-					 - corresponds to x86 multiplication
-					 - remember that width growth is exponential only on iterated diamond graph
-					 - note impossibility of raising to a non-constant power or accumulating without shifting and rounding
-					 - width tracked either by elastic_integer itself or by its (immediate) underlying type
-					-->
-
-					<section>
+				<section>
 					<h2>2. P0037R6: <code>fixed_point</code></h2>
 				</section>
 				<section>
@@ -761,7 +753,7 @@ using elastic_fixed_point =
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
 							<pre><code class="c++">auto add(int l,
-                   int r) {
+         int r) {
 
     return (long long)l+r;
 }</code></pre>
@@ -809,7 +801,7 @@ using elastic_fixed_point =
 				</section>
 
 				<section>
-					<h3>Euclidean Division vs 'Quasi-Exact' Division</h3>
+					<h3><code>fixed_point</code> Division vs 'Quasi-Exact' Division</h3>
 					<p>See P1368R0 for details of these</p>
 					<ul>
 						<li>Quasi-exact division pre-widens dividend</li>
@@ -817,28 +809,61 @@ using elastic_fixed_point =
 						<li>Typically <i>feels</i> like floating-point division</li>
 						<li><code>fixed_point</code> supports, but not for <code>operator/</code></li>
 					</ul>
-					<code><p>Quotient<sub>i</sub> = Dividend<sub>i</sub>+Divisor<sub>f</sub></p>
-					<p>Quotient<sub>f</sub> = Dividend<sub>f</sub>+Divisor<sub>i</sub></p></code>
 				</section>
 
 				<section>
+					<h3>'Quasi-Exact' Division</h3>
+					<p>Multiply: operand digits <i>contribute</i> to result</p>
+					<pre><code>5.5 * 5.5 = 30.25
+55. * .55 = 30.25
+5.5 * 55. = 302.5
+
+AAA.BBBBB * CCCCCC.DD = AAACCCCCC.BBBBBDD</code></pre>
+					<p>Division: operand digits <i>cross-contribute</i> to result</p>
+
+					<pre><code>10 / 100 = 00.10
+1 / 1000 = 0.001
+
+AAA.BBBBB / CCCCCC.DD = AAADD.BBBBBCCCCCC</code></pre>
+				</section>
+
+
+
+				<section data-transition="slide-in fade-out">
+					<h3><code>fixed_point</code> Division<a href="https://godbolt.org/z/ltPmw4">.</a></h3>
+					<p>$0.80 / $0.25 = 3 r $0.05</p>
+					<pre><code>template&lt;int Exponent>
+using currency = fixed_point&lt;int, Exponent, 10>;
+
+auto n = currency<-2>(.80);
+auto d = currency<-2>(.25);
+
+auto q = n / d;  // currency<0>(3)
+auto r = n % d;  // currency<-2>(.05)
+</code></pre>
+				</section>
+
+				<section data-transition="fade-in slide-out">
+					<h3><code>fixed_point</code> Division<a href="https://godbolt.org/z/qgf5qd">.</a></h3>
+					<p>$0.80 / 3 = $0.26 r $0.02</p>
+					<pre><code>template&lt;int Exponent>
+using currency = fixed_point&lt;int, Exponent, 10>;
+
+auto n = currency<-2>(.80);
+auto d = currency<0>(3);
+
+auto q = n / d;  // currency<-2>(.26)
+auto r = n % d;  // currency<-2>(.02)
+</code></pre>
+				</section>
+				
+				<section>
 					<h3>As an alternative to <code>float</code></h3>
-					<ul>
-						<li>floating-point uses as much as 10× silicon and energy</li>
-						<li>fixed-point is sometimes faster, sometimes slower</li>
+					<ul style="font-size: 95%">
+						<li>Floating-point uses as much as 10× silicon and energy</li>
+						<li>Fixed-point is sometimes faster, sometimes slower</li>
 						<li>Applications include finance, CNNs, FPGAs, DSPs</li>
 						<li>Plus modelling of systems with determinism and tight control over precision</li>
-					</ul>
-				</section>
-
-				<section>
-					<h3>As an alternative to <code>float</code></h3>
-					<ul>
-						<li>A scaled integer is <em>not</em> a budget <code>float</code></li>
-						<li>'Quasi-exact' division (<a href="http://wg21.link/p1368">P1368</a>) is desirable at some level,
-							possibly in a type that uses <code>fixed_point</code></li>
-						<li>'surprising' (i.e. Euclidean) division makes sense once you consider finance:</li>
-						<code>using usd = fixed_point&lt;int, -2, 10></code>
 					</ul>
 				</section>
 
