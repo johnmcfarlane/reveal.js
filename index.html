@@ -42,7 +42,7 @@
 				<section>
 					<h3>The Type</h3>
 					<p>integer type that <em>generalizes promotion</em> to avoid overflow</p>
-					<pre><code style="c++">template&lt;class Rep>
+					<pre><code class="c++">template&lt;class Rep>
 class elastic_integer {
 public:
   using rep = Rep;
@@ -56,14 +56,14 @@ private:
 					<p>operands promoted to prevent overflow</p>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
-							<pre><code style="c++">auto a = elastic_integer&lt;signed char>{100};
+							<pre><code class="c++">auto a = elastic_integer&lt;signed char>{100};
 
 // elastic_integer&lt;int>{10000}
 auto b = a*a;
 </code></pre>
 						</div>
 						<div style="flex: 40%">
-							<pre><code style="c++">movsx   ecx, byte ptr [rdi]
+							<pre><code class="c++">movsx   ecx, byte ptr [rdi]
 movsx   eax, byte ptr [rsi]
 imul    eax, ecx
 ret</code></pre>
@@ -71,13 +71,13 @@ ret</code></pre>
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
-							<pre><code style="c++">auto c = elastic_integer&lt;short>{1000};
+							<pre><code class="c++">auto c = elastic_integer&lt;short>{1000};
 
 // elastic_integer&lt;int>{1000000}
 auto d = c*c;</code></pre>
 						</div>
 						<div style="flex: 40%">
-							<pre><code style="c++">movsx   ecx, word ptr [rdi]
+							<pre><code class="c++">movsx   ecx, word ptr [rdi]
 movsx   eax, word ptr [rsi]
 imul    eax, ecx
 ret</code></pre>
@@ -85,13 +85,13 @@ ret</code></pre>
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
-							<pre><code style="c++">auto e = elastic_integer&lt;int>{1000000};
+							<pre><code class="c++">auto e = elastic_integer&lt;int>{1000000};
 
 // elastic_integer&lt;long long>{1000000000000LL}
 auto f = e*e;</code></pre>
 						</div>
 						<div style="flex: 40%">
-							<pre><code style="c++">movsxd  rcx, dword ptr [rdi]
+							<pre><code class="c++">movsxd  rcx, dword ptr [rdi]
 movsxd  rax, dword ptr [rsi]
 imul    rax, rcx
 ret</code></pre>
@@ -103,14 +103,14 @@ ret</code></pre>
 					<p>native promotion to <code>int</code> width is observed</p>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
-							<pre><code style="c++">auto a = elastic_integer&lt;signed char>{100};
+							<pre><code class="c++">auto a = elastic_integer&lt;signed char>{100};
 
 // elastic_integer&lt;int>{10000}
 auto b = a*a;
 </code></pre>
 						</div>
 						<div style="flex: 40%">
-							<pre><code style="c++">movsx   ecx, byte ptr [rdi]
+							<pre><code class="c++">movsx   ecx, byte ptr [rdi]
 movsx   eax, byte ptr [rsi]
 imul    eax, ecx
 ret</code></pre>
@@ -118,13 +118,13 @@ ret</code></pre>
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
-							<pre><code style="c++">auto c = elastic_integer&lt;short>{1000};
+							<pre><code class="c++">auto c = elastic_integer&lt;short>{1000};
 
 // elastic_integer&lt;int>{1000000}
 auto d = c*c;</code></pre>
 						</div>
 						<div style="flex: 40%">
-							<pre><code style="c++">movsx   ecx, word ptr [rdi]
+							<pre><code class="c++">movsx   ecx, word ptr [rdi]
 movsx   eax, word ptr [rsi]
 imul    eax, ecx
 ret</code></pre>
@@ -132,13 +132,13 @@ ret</code></pre>
 					</div>
 					<div style="display: flex; font-size: 80%; opacity:.4">
 						<div style="flex: 60%">
-							<pre><code style="c++">auto e = elastic_integer&lt;int>{1000000};
+							<pre><code class="c++">auto e = elastic_integer&lt;int>{1000000};
 
 // elastic_integer&lt;long long>{1000000000000LL}
 auto f = e*e;</code></pre>
 						</div>
 						<div style="flex: 40%">
-							<pre><code style="c++">movsxd  rcx, dword ptr [rdi]
+							<pre><code class="c++">movsxd  rcx, dword ptr [rdi]
 movsxd  rax, dword ptr [rsi]
 imul    rax, rcx
 ret</code></pre>
@@ -150,14 +150,14 @@ ret</code></pre>
 					<p>further promotion happens when necessary</p>
 					<div style="display: flex; font-size: 80%; opacity:.4">
 						<div style="flex: 60%">
-							<pre><code style="c++">auto a = elastic_integer&lt;signed char>{100};
+							<pre><code class="c++">auto a = elastic_integer&lt;signed char>{100};
 
 // elastic_integer&lt;int>{10000}
 auto b = a*a;
 </code></pre>
 						</div>
 						<div style="flex: 40%">
-							<pre><code style="c++">movsx   ecx, byte ptr [rdi]
+							<pre><code class="c++">movsx   ecx, byte ptr [rdi]
 movsx   eax, byte ptr [rsi]
 imul    eax, ecx
 ret</code></pre>
@@ -165,13 +165,13 @@ ret</code></pre>
 					</div>
 					<div style="display: flex; font-size: 80%; opacity:.4">
 						<div style="flex: 60%">
-							<pre><code style="c++">auto c = elastic_integer&lt;short>{1000};
+							<pre><code class="c++">auto c = elastic_integer&lt;short>{1000};
 
 // elastic_integer&lt;int>{1000000}
 auto d = c*c;</code></pre>
 						</div>
 						<div style="flex: 40%">
-							<pre><code style="c++">movsx   ecx, word ptr [rdi]
+							<pre><code class="c++">movsx   ecx, word ptr [rdi]
 movsx   eax, word ptr [rsi]
 imul    eax, ecx
 ret</code></pre>
@@ -179,13 +179,13 @@ ret</code></pre>
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
-							<pre><code style="c++">auto e = elastic_integer&lt;int>{1000000};
+							<pre><code class="c++">auto e = elastic_integer&lt;int>{1000000};
 
 // elastic_integer&lt;long long>{1000000000000LL}
 auto f = e*e;</code></pre>
 						</div>
 						<div style="flex: 40%">
-							<pre><code style="c++">movsxd  rcx, dword ptr [rdi]
+							<pre><code class="c++">movsxd  rcx, dword ptr [rdi]
 movsxd  rax, dword ptr [rsi]
 imul    rax, rcx
 ret</code></pre>
@@ -230,7 +230,7 @@ ret</code></pre>
 					<h3>Run-time Overflow</h3>
 					<p>Run-time overflow is a separate concern.</p>
 					<p>A complete safety solution is a composite type.</p>
-					<pre><code style="c++">// Overflow is a contract violation.
+					<pre><code class="c++">// Overflow is a contract violation.
 template&lt;class Rep>
 class overflow_integer;
 
@@ -243,7 +243,7 @@ using safe_integer = overflow_integer&lt;elastic_integer&lt;Rep>>;</code></pre>
 				<section>
 					<h3>Further Composition</h3>
 					<p>static arbitrarily wide integer</p>
-					<pre><code style="c++">// similar type to P0539
+					<pre><code class="c++">// similar type to P0539
 template&ltint Digits, class Narrowest>
 class wide_integer;
 
@@ -295,9 +295,9 @@ using wide_elastic_integer =
 				<section>
 					<h3>The Type</h3>
 					<p>scales integers to approximate real-numbers</p>
-					<pre><code style="c++">template&lt;class Rep=int, int Exponent=0, int Radix=2>
+					<pre><code class="c++">template&lt;class Rep=int, int Exponent=0, int Radix=2>
 class fixed_point;</code></pre>
-					<pre><code style="c++">template&lt;class Rep, int Exponent, int Radix>
+					<pre><code class="c++">template&lt;class Rep, int Exponent, int Radix>
 class fixed_point {
 public:
   using rep = Rep;
@@ -311,7 +311,7 @@ private:
 					<h3>The Type</h3>
 					<p>Like a span of digits over a number...</p>
 					&nbsp;
-					<div><code style="c++">fixed_point&lt;short, -8> a = 10.75</code></div>
+					<div><code class="c++">fixed_point&lt;short, -8> a = 10.75</code></div>
 					&nbsp;
 					<div><code style="font-size: 85%">
 						<span style="opacity:0.25">…000000000000</span>00001010.11000000<span style="opacity:0.25">000000000000…</span>
@@ -322,7 +322,7 @@ private:
 					<h3>The Type</h3>
 					<p>Becomes an integer when <code>Exponent=0</code>...</p>
 					&nbsp;
-					<div><code style="c++">fixed_point&lt;int, 0> b = 42</code></div>
+					<div><code class="c++">fixed_point&lt;int, 0> b = 42</code></div>
 					&nbsp;
 					<div><code style="font-size: 85%">
 						<span style="opacity:0.25">…0000000</span>00000000000000000000000000101010.<span style="opacity:0.25">0000000…</span>
@@ -334,13 +334,13 @@ private:
 					<p><code></code>conversion to/from integer scales</p>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 50%">
-							<pre><code style="c++">fixed_point&lt;int, -16> from_int(int n)
+							<pre><code class="c++">fixed_point&lt;int, -16> from_int(int n)
 {
     return n;
 }</code></pre>
 						</div>
 						<div style="flex: 50%">
-							<pre><code style="c++">from_int(int):
+							<pre><code class="c++">from_int(int):
 	mov     eax, edi
 	sal     eax, 16
 	ret</code></pre>
@@ -348,13 +348,13 @@ private:
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 50%">
-							<pre><code style="c++">int to_int(fixed_point&lt;int, -16> f)
+							<pre><code class="c++">int to_int(fixed_point&lt;int, -16> f)
 {
     return static_cast&lt;int>(f);
 }</code></pre>
 						</div>
 						<div style="flex: 50%">
-							<pre><code style="c++">to_int(cnl::fixed_point&lt;int, -16, 2>):
+							<pre><code class="c++">to_int(cnl::fixed_point&lt;int, -16, 2>):
 	test    edi, edi
 	lea     eax, [rdi+65535]
 	cmovns  eax, edi
@@ -364,14 +364,14 @@ private:
 					</div>
 					<div style="display: flex; font-size: 80%; opacity: 0">
 						<div style="flex: 50%">
-							<pre><code style="c++">int to_int(fixed_point&lt;int, -16> f)
+							<pre><code class="c++">int to_int(fixed_point&lt;int, -16> f)
 {
     Expects(f>=0);
     return static_cast&lt;int>(f);
 }</code></pre>
 						</div>
 						<div style="flex: 50%">
-							<pre><code style="c++">to_int(cnl::fixed_point&lt;int, -16, 2>):
+							<pre><code class="c++">to_int(cnl::fixed_point&lt;int, -16, 2>):
 	mov     eax, edi
 	sar     eax, 16
 	ret</code></pre>
@@ -383,13 +383,13 @@ private:
 					<p><code></code>-ve right-shift prevents efficient down-scaling</p>
 					<div style="display: flex; font-size: 80%; opacity: .4">
 						<div style="flex: 50%">
-							<pre><code style="c++">fixed_point&lt;int, -16> from_int(int n)
+							<pre><code class="c++">fixed_point&lt;int, -16> from_int(int n)
 {
     return n;
 }</code></pre>
 						</div>
 						<div style="flex: 50%">
-							<pre><code style="c++">from_int(int):
+							<pre><code class="c++">from_int(int):
 	mov     eax, edi
 	sal     eax, 16
 	ret</code></pre>
@@ -397,13 +397,13 @@ private:
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 50%">
-							<pre><code style="c++">int to_int(fixed_point&lt;int, -16> f)
+							<pre><code class="c++">int to_int(fixed_point&lt;int, -16> f)
 {
     return static_cast&lt;int>(f);
 }</code></pre>
 						</div>
 						<div style="flex: 50%">
-							<pre><code style="c++">to_int(cnl::fixed_point&lt;int, -16, 2>):
+							<pre><code class="c++">to_int(cnl::fixed_point&lt;int, -16, 2>):
 	test    edi, edi
 	lea     eax, [rdi+65535]
 	cmovns  eax, edi
@@ -413,14 +413,14 @@ private:
 					</div>
 					<div style="display: flex; font-size: 80%; opacity: 0">
 						<div style="flex: 50%">
-							<pre><code style="c++">int to_int(fixed_point&lt;int, -16> f)
+							<pre><code class="c++">int to_int(fixed_point&lt;int, -16> f)
 {
     Expects(f>=0);
     return static_cast&lt;int>(f);
 }</code></pre>
 						</div>
 						<div style="flex: 50%">
-							<pre><code style="c++">to_int(cnl::fixed_point&lt;int, -16, 2>):
+							<pre><code class="c++">to_int(cnl::fixed_point&lt;int, -16, 2>):
         mov     eax, edi
         sar     eax, 16
         ret</code></pre>
@@ -432,13 +432,13 @@ private:
 					<p><code>Rep</code> must be unsigned or known non-negative</p>
 					<div style="display: flex; font-size: 80%; opacity: .1">
 						<div style="flex: 50%">
-							<pre><code style="c++">fixed_point&lt;int, -16> from_int(int n)
+							<pre><code class="c++">fixed_point&lt;int, -16> from_int(int n)
 {
     return n;
 }</code></pre>
 						</div>
 						<div style="flex: 50%">
-							<pre><code style="c++">from_int(int):
+							<pre><code class="c++">from_int(int):
 	mov     eax, edi
 	sal     eax, 16
 	ret</code></pre>
@@ -446,13 +446,13 @@ private:
 					</div>
 					<div style="display: flex; font-size: 80%; opacity: .5">
 						<div style="flex: 50%">
-							<pre><code style="c++">int to_int(fixed_point&lt;int, -16> f)
+							<pre><code class="c++">int to_int(fixed_point&lt;int, -16> f)
 {
     return static_cast&lt;int>(f);
 }</code></pre>
 						</div>
 						<div style="flex: 50%">
-							<pre><code style="c++">to_int(cnl::fixed_point&lt;int, -16, 2>):
+							<pre><code class="c++">to_int(cnl::fixed_point&lt;int, -16, 2>):
 	test    edi, edi
 	lea     eax, [rdi+65535]
 	cmovns  eax, edi
@@ -462,14 +462,14 @@ private:
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 50%">
-							<pre><code style="c++">int to_int(fixed_point&lt;int, -16> f)
+							<pre><code class="c++">int to_int(fixed_point&lt;int, -16> f)
 {
     Expects(f>=0);
     return static_cast&lt;int>(f);
 }</code></pre>
 						</div>
 						<div style="flex: 50%">
-							<pre><code style="c++">to_int(cnl::fixed_point&lt;int, -16, 2>):
+							<pre><code class="c++">to_int(cnl::fixed_point&lt;int, -16, 2>):
         mov     eax, edi
         sar     eax, 16
         ret</code></pre>
@@ -482,28 +482,28 @@ private:
 					<p>Arithmetic overloads are pass-throughs<a href="https://godbolt.org/z/lSvmsl">.</a></p>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 50%">
-							<pre><code style="c++">auto add(int l,
+							<pre><code class="c++">auto add(int l,
          int r) {
 
     return l+r;
 }</code></pre>
 						</div>
 						<div style="flex: 50%">
-							<pre><code style="c++">add:
+							<pre><code class="c++">add:
 	lea     eax, [rdi+rsi]
 	ret</code></pre>
 						</div>
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 50%">
-							<pre><code style="c++">auto mult(int l,
+							<pre><code class="c++">auto mult(int l,
           int r) {
 
     return l*r;
 }</code></pre>
 						</div>
 						<div style="flex: 50%">
-							<pre><code style="c++">mult:
+							<pre><code class="c++">mult:
 	mov     eax, edi
 	imul    eax, esi
 	ret</code></pre>
@@ -511,14 +511,14 @@ private:
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 50%">
-							<pre><code style="c++">auto divide(int l,
+							<pre><code class="c++">auto divide(int l,
             int r) {
 
     return l/r;
 }</code></pre>
 						</div>
 						<div style="flex: 50%">
-							<pre><code style="c++">divide:
+							<pre><code class="c++">divide:
 	mov     eax, edi
 	cdq
 	idiv    esi
@@ -531,28 +531,28 @@ private:
 					<p>Arithmetic overloads are pass-throughs<a href="https://godbolt.org/z/MamRWT">.</a></p>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 50%">
-							<pre><code style="c++">auto add(fixed_point&lt;int, -8> l,
+							<pre><code class="c++">auto add(fixed_point&lt;int, -8> l,
          fixed_point&lt;int, -8> r) {
     // returns fixed_point&lt;int, -8>
     return l+r;
 }</code></pre>
 						</div>
 						<div style="flex: 50%">
-							<pre><code style="c++">add:
+							<pre><code class="c++">add:
 	lea     eax, [rdi+rsi]
 	ret</code></pre>
 						</div>
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 50%">
-							<pre><code style="c++">auto mult(fixed_point&lt;int, -8> l,
+							<pre><code class="c++">auto mult(fixed_point&lt;int, -8> l,
           fixed_point&lt;int, -8> r) {
     // returns fixed_point&lt;int, -16>
     return l*r;
 }</code></pre>
 						</div>
 						<div style="flex: 50%">
-							<pre><code style="c++">mult:
+							<pre><code class="c++">mult:
 	mov     eax, edi
 	imul    eax, esi
 	ret</code></pre>
@@ -560,14 +560,14 @@ private:
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 50%">
-							<pre><code style="c++">auto divide(fixed_point&lt;int, -8> l,
+							<pre><code class="c++">auto divide(fixed_point&lt;int, -8> l,
             fixed_point&lt;int, -8> r) {
     // returns fixed_point&lt;int, 0>
     return l/r;
 }</code></pre>
 						</div>
 						<div style="flex: 50%">
-							<pre><code style="c++">divide:
+							<pre><code class="c++">divide:
 	mov     eax, edi
 	cdq
 	idiv    esi
@@ -580,28 +580,28 @@ private:
 					<p>Multiplication is lossless but susceptible to overflow<a href="https://godbolt.org/z/MamRWT">.</a></p>
 					<div style="display: flex; font-size: 80%; opacity: .4">
 						<div style="flex: 50%">
-							<pre><code style="c++">auto add(fixed_point&lt;int, -8> l,
+							<pre><code class="c++">auto add(fixed_point&lt;int, -8> l,
          fixed_point&lt;int, -8> r) {
     // returns fixed_point&lt;int, -8>
     return l+r;
 }</code></pre>
 						</div>
 						<div style="flex: 50%">
-							<pre><code style="c++">add:
+							<pre><code class="c++">add:
 	lea     eax, [rdi+rsi]
 	ret</code></pre>
 						</div>
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 50%">
-							<pre><code style="c++">auto mult(fixed_point&lt;int, -8> l,
+							<pre><code class="c++">auto mult(fixed_point&lt;int, -8> l,
           fixed_point&lt;int, -8> r) {
     // returns fixed_point&lt;int, -16>
     return l*r;
 }</code></pre>
 						</div>
 						<div style="flex: 50%">
-							<pre><code style="c++">mult:
+							<pre><code class="c++">mult:
 	mov     eax, edi
 	imul    eax, esi
 	ret</code></pre>
@@ -609,14 +609,14 @@ private:
 					</div>
 					<div style="display: flex; font-size: 80%; opacity: .4">
 						<div style="flex: 50%">
-							<pre><code style="c++">auto divide(fixed_point&lt;int, -8> l,
+							<pre><code class="c++">auto divide(fixed_point&lt;int, -8> l,
             fixed_point&lt;int, -8> r) {
     // returns fixed_point&lt;int, 0>
     return l/r;
 }</code></pre>
 						</div>
 						<div style="flex: 50%">
-							<pre><code style="c++">divide:
+							<pre><code class="c++">divide:
 	mov     eax, edi
 	cdq
 	idiv    esi
@@ -629,28 +629,28 @@ private:
 					<p>Division is surprising<a href="https://godbolt.org/z/MamRWT">.</a></p>
 					<div style="display: flex; font-size: 80%; opacity: .4">
 						<div style="flex: 50%">
-							<pre><code style="c++">auto add(fixed_point&lt;int, -8> l,
+							<pre><code class="c++">auto add(fixed_point&lt;int, -8> l,
          fixed_point&lt;int, -8> r) {
     // returns fixed_point&lt;int, -8>
     return l+r;
 }</code></pre>
 						</div>
 						<div style="flex: 50%">
-							<pre><code style="c++">add:
+							<pre><code class="c++">add:
 	lea     eax, [rdi+rsi]
 	ret</code></pre>
 						</div>
 					</div>
 					<div style="display: flex; font-size: 80%; opacity: .4">
 						<div style="flex: 50%">
-							<pre><code style="c++">auto mult(fixed_point&lt;int, -8> l,
+							<pre><code class="c++">auto mult(fixed_point&lt;int, -8> l,
           fixed_point&lt;int, -8> r) {
     // returns fixed_point&lt;int, -16>
     return l*r;
 }</code></pre>
 						</div>
 						<div style="flex: 50%">
-							<pre><code style="c++">mult:
+							<pre><code class="c++">mult:
 	mov     eax, edi
 	imul    eax, esi
 	ret</code></pre>
@@ -658,14 +658,14 @@ private:
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 50%">
-							<pre><code style="c++">auto divide(fixed_point&lt;int, -8> l,
+							<pre><code class="c++">auto divide(fixed_point&lt;int, -8> l,
             fixed_point&lt;int, -8> r) {
     // returns fixed_point&lt;int, 0>
     return l/r;
 }</code></pre>
 						</div>
 						<div style="flex: 50%">
-							<pre><code style="c++">divide:
+							<pre><code class="c++">divide:
 	mov     eax, edi
 	cdq
 	idiv    esi
@@ -687,7 +687,7 @@ private:
 				<section>
 					<h3>Lossless Multiplication</h3>
 					<div>
-							<pre><code style="c++">template&lt;int Digits, class Narrowest=int>
+							<pre><code class="c++">template&lt;int Digits, class Narrowest=int>
 class tracked_integer;
 
 template&lt;class Rep>
@@ -707,14 +707,14 @@ using elastic_fixed_point =
 					<p>No risk of overflow; no loss of precision<a href="https://godbolt.org/z/PPesiD">.</a></p>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
-							<pre><code style="c++">auto add(elastic_fixed_point&lt;31, -16> l,
+							<pre><code class="c++">auto add(elastic_fixed_point&lt;31, -16> l,
          elastic_fixed_point&lt;31, -16> r) {
     // returns elastic_fixed_point&lt;32, -16>
     return l+r;
 }</code></pre>
 						</div>
 						<div style="flex: 40%">
-							<pre><code style="c++">add:
+							<pre><code class="c++">add:
 	movsx   rsi, esi
 	movsx   rax, edi
 	add     rax, rsi
@@ -723,14 +723,14 @@ using elastic_fixed_point =
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
-							<pre><code style="c++">auto mult(elastic_fixed_point&lt;31, -16> l,
+							<pre><code class="c++">auto mult(elastic_fixed_point&lt;31, -16> l,
           elastic_fixed_point&lt;31, -16> r) {
     // returns elastic_fixed_point&lt;62, -32>
     return l*r;
 }</code></pre>
 						</div>
 						<div style="flex: 40%">
-							<pre><code style="c++">mult:
+							<pre><code class="c++">mult:
 	movsx   rax, esi
 	movsx   rdi, edi
 	imul    rax, rdi
@@ -739,14 +739,14 @@ using elastic_fixed_point =
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
-							<pre><code style="c++">auto divide(elastic_fixed_point&lt;31, -16> l,
+							<pre><code class="c++">auto divide(elastic_fixed_point&lt;31, -16> l,
             elastic_fixed_point&lt;31, -16> r) {
     // returns elastic_fixed_point&lt;31, 0>
     return l/r;
 }</code></pre>
 						</div>
 						<div style="flex: 40%">
-							<pre><code style="c++">divide:
+							<pre><code class="c++">divide:
 	mov     eax, edi
 	cdq
 	idiv    esi
@@ -760,14 +760,14 @@ using elastic_fixed_point =
 					<p>Wrapper over simple integer arithmetic<a href="https://godbolt.org/z/0RQ5YD">.</a></p>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
-							<pre><code style="c++">auto add(int l,
+							<pre><code class="c++">auto add(int l,
                    int r) {
 
     return (long long)l+r;
 }</code></pre>
 						</div>
 						<div style="flex: 40%">
-							<pre><code style="c++">add:
+							<pre><code class="c++">add:
 	movsx   rsi, esi
 	movsx   rax, edi
 	add     rax, rsi
@@ -776,14 +776,14 @@ using elastic_fixed_point =
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
-							<pre><code style="c++">auto mult(int l,
+							<pre><code class="c++">auto mult(int l,
           int r) {
 
     return (long long)l*r;
 }</code></pre>
 						</div>
 						<div style="flex: 40%">
-							<pre><code style="c++">mult:
+							<pre><code class="c++">mult:
 	movsx   rax, esi
 	movsx   rdi, edi
 	imul    rax, rdi
@@ -792,14 +792,14 @@ using elastic_fixed_point =
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
-							<pre><code style="c++">auto divide(int l,
+							<pre><code class="c++">auto divide(int l,
             int r) {
 
     return l/r;
 }</code></pre>
 						</div>
 						<div style="flex: 40%">
-							<pre><code style="c++">divide:
+							<pre><code class="c++">divide:
 	mov     eax, edi
 	cdq
 	idiv    esi
@@ -932,7 +932,7 @@ using elastic_fixed_point =
 				</section>
 				<section>
 					<h2>Out-of-range<sup>†</sup> Handling</h2>
-					<div><pre><code style="c++">template&lt;class Rep, class Tag = contract_tag>
+					<div><pre><code class="c++">template&lt;class Rep, class Tag = contract_tag>
 class fixed_width_integer;
 
 // makes out-of-range a post-condition violation
@@ -948,13 +948,13 @@ struct modulo_tag;</code></pre></div>
 				<section>
 					<h2>Out-of-range Avoidance</h2>
 					<p>Subject of P0828</p>
-					<div><pre><code style="c++">template&lt;class Rep>
+					<div><pre><code class="c++">template&lt;class Rep>
 class promotion_integer;</code></pre></div>
 				</section>
 				<section>
 					<h2>Wide Integers</h2>
 					<p>A.K.A. fixed size bignum; associated with multi-word</p>
-					<div><pre><code style="c++">template&lt;int Digits, class Narrowest>
+					<div><pre><code class="c++">template&lt;int Digits, class Narrowest>
 class wide_integer;</code></pre></div>
 					<p style="text-align: left; font-size: 50%"><code>Narrowest</code> denotes the least wide representational type to use.
 						For example, <code>wide_integer&lt;12, short></code>, would fit into 2 bytes.
@@ -963,7 +963,7 @@ class wide_integer;</code></pre></div>
 				<section>
 					<h2>Scaled Integers</h2>
 					<p style="font-size: 75%">This includes <code>fixed_point</code> but also describes something much like <code>chrono::duration</code>.</p>
-					<div><pre><code style="c++">template&lt;class Rep, class Scale>
+					<div><pre><code class="c++">template&lt;class Rep, class Scale>
 class scaled_integer;
 
 template&lt;intmax_t Exponent=0, int Radix=2>
@@ -981,7 +981,7 @@ using duration = scaled_integer&lt;Rep, Period>;</code></pre></div>
 				<section>
 					<h2>Rounding</h2>
 					<p>float-to-int, right-shift and division all handle precision loss in their own special way.</p>
-					<div><pre><code style="c++">template&lt;class Rep, class Tag = nearest_tag>
+					<div><pre><code class="c++">template&lt;class Rep, class Tag = nearest_tag>
 class rounding_integer;
 
 struct nearest_tag;     // traditional round-to-nearest
@@ -993,7 +993,7 @@ struct round_down_tag;  // toward -ve infinity
 				<section>
 					<h2>Composite Type</h2>
 					<p><code>static_integer</code> is similar to P0106's <code>integral</code>.</p>
-					<div><pre><code style="c++">template&lt;
+					<div><pre><code class="c++">template&lt;
     int Digits = digits&lt;int>::value,
     class RoundingTag = nearest_rounding_tag,
     class OverflowTag = undefined_overflow_tag,
@@ -1010,7 +1010,7 @@ using static_integer = rounding_integer&lt;
 				<section>
 					<h2>Composite Type</h2>
 					<p><code>static_number</code> is similar to P0106's <code>negatable</code>.</p>
-					<div><pre><code style="c++">template&lt;
+					<div><pre><code class="c++">template&lt;
     int Digits,
     int Exponent = 0,
     class RoundingTag = nearest_rounding_tag,
