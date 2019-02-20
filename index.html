@@ -42,10 +42,11 @@
 				<section>
 					<h3>The Type</h3>
 					<p>integer type that <em>generalizes promotion</em> to avoid overflow</p>
-					<pre><code class="c++">template&lt;class Rep>
+					<pre><code class="c++">template&lt;int Digits, class Narrowest>
 class elastic_integer {
+  static constexpr num_digits_ = max(digits_v&lt;Narrowest>, Digits);
 public:
-  using rep = Rep;
+  using rep = set_digits_t&lt;Narrowest, num_digits_>;
   ...
 private:
   rep rep_;
@@ -56,9 +57,9 @@ private:
 					<p>operands promoted to prevent overflow</p>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
-							<pre><code class="c++">auto a = elastic_integer&lt;signed char>{100};
+							<pre><code class="c++">auto a = elastic_integer&lt;7>{100};
 
-// elastic_integer&lt;int>{10000}
+// elastic_integer&lt;7>{10000} w rep=int
 auto b = a*a;
 </code></pre>
 						</div>
@@ -71,9 +72,9 @@ ret</code></pre>
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
-							<pre><code class="c++">auto c = elastic_integer&lt;short>{1000};
+							<pre><code class="c++">auto c = elastic_integer&lt;15>{1000};
 
-// elastic_integer&lt;int>{1000000}
+// elastic_integer&lt;15>{1000000} w rep=int
 auto d = c*c;</code></pre>
 						</div>
 						<div style="flex: 40%">
@@ -85,9 +86,9 @@ ret</code></pre>
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
-							<pre><code class="c++">auto e = elastic_integer&lt;int>{1000000};
+							<pre><code class="c++">auto e = elastic_integer&lt;31>{1000000};
 
-// elastic_integer&lt;long long>{1000000000000LL}
+// elastic_integer&lt;31>{1000000000000LL} w rep=long long
 auto f = e*e;</code></pre>
 						</div>
 						<div style="flex: 40%">
@@ -103,9 +104,9 @@ ret</code></pre>
 					<p>native promotion to <code>int</code> width is observed</p>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
-							<pre><code class="c++">auto a = elastic_integer&lt;signed char>{100};
+							<pre><code class="c++">auto a = elastic_integer&lt;7>{100};
 
-// elastic_integer&lt;int>{10000}
+// elastic_integer&lt;7>{10000} w rep=int
 auto b = a*a;
 </code></pre>
 						</div>
@@ -118,9 +119,9 @@ ret</code></pre>
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
-							<pre><code class="c++">auto c = elastic_integer&lt;short>{1000};
+							<pre><code class="c++">auto c = elastic_integer&lt;15>{1000};
 
-// elastic_integer&lt;int>{1000000}
+// elastic_integer&lt;15>{1000000} w rep=int
 auto d = c*c;</code></pre>
 						</div>
 						<div style="flex: 40%">
@@ -132,7 +133,7 @@ ret</code></pre>
 					</div>
 					<div style="display: flex; font-size: 80%; opacity:.4">
 						<div style="flex: 60%">
-							<pre><code class="c++">auto e = elastic_integer&lt;int>{1000000};
+							<pre><code class="c++">auto e = elastic_integer&lt;31>{1000000};
 
 // elastic_integer&lt;long long>{1000000000000LL}
 auto f = e*e;</code></pre>
@@ -150,9 +151,9 @@ ret</code></pre>
 					<p>further promotion happens when necessary</p>
 					<div style="display: flex; font-size: 80%; opacity:.4">
 						<div style="flex: 60%">
-							<pre><code class="c++">auto a = elastic_integer&lt;signed char>{100};
+							<pre><code class="c++">auto a = elastic_integer&lt;7>{100};
 
-// elastic_integer&lt;int>{10000}
+// elastic_integer&lt;7>{10000} w rep=int
 auto b = a*a;
 </code></pre>
 						</div>
@@ -165,9 +166,9 @@ ret</code></pre>
 					</div>
 					<div style="display: flex; font-size: 80%; opacity:.4">
 						<div style="flex: 60%">
-							<pre><code class="c++">auto c = elastic_integer&lt;short>{1000};
+							<pre><code class="c++">auto c = elastic_integer&lt;15>{1000};
 
-// elastic_integer&lt;int>{1000000}
+// elastic_integer&lt;15>{1000000} w rep=int
 auto d = c*c;</code></pre>
 						</div>
 						<div style="flex: 40%">
@@ -179,9 +180,9 @@ ret</code></pre>
 					</div>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 60%">
-							<pre><code class="c++">auto e = elastic_integer&lt;int>{1000000};
+							<pre><code class="c++">auto e = elastic_integer&lt;31>{1000000};
 
-// elastic_integer&lt;long long>{1000000000000LL}
+// elastic_integer&lt;31>{1000000000000LL} w rep=long long
 auto f = e*e;</code></pre>
 						</div>
 						<div style="flex: 40%">
@@ -235,8 +236,8 @@ template&lt;class Rep>
 class overflow_integer;
 
 // a type that widens when it can, and traps when it can't
-template&lt;class Rep>
-using safe_integer = overflow_integer&lt;elastic_integer&lt;Rep>>;</code></pre>
+template&lt;int Digits, class Narrowest>
+using safe_integer = overflow_integer&lt;elastic_integer&lt;Digits, Narrowest>>;</code></pre>
 					<p>Covered in P0554</p>
 				</section>
 
@@ -250,7 +251,7 @@ class wide_integer;
 // a type that widens arbitrarily with precise 'bit tracking'
 template&lt;int Digits, class Narrowest>
 using wide_elastic_integer =
-    elastic_integer&lt;wide_integer&lt;Digits, Narrowest>>;</code></pre>
+    elastic_integer&lt;Digits, wide_integer&lt;>>;</code></pre>
 				</section>
 
 				<section style="text-align: left">
@@ -263,7 +264,6 @@ using wide_elastic_integer =
 						<li>making it an illegal value is tempting</li>
 					</ul></div>
 				</section>
-
 				<section style="text-align: left">
 					<h3>Numeric Traits</h3>
 					<p>How do you manipulate number of digits?</p>
@@ -279,6 +279,16 @@ using wide_elastic_integer =
 							<li><code>is_signed_v</code>/<code>is_unsigned_v</code></li>
 						</ul>
 					</ul>
+				</section>
+				<section>
+					<h3>Late-breaking Revisions</h3>
+					<p>Where <code>Rep</code> already counts its bits (e.g. <code>wide_integer</code>),
+						there is no need for <code>elastic_integer</code> to do that work too.</p>
+					<p>So <code>elastic_integer&lt;Digits, Narrowest></code> can be replaced by <code>promoted_integer&lt;Rep></code></p>
+					<p>But where<code>Rep</code> doesn't counts its bits (e.g. <code>int</code>),
+						there will need to be an additional wrapper that does only this.</p>
+					<p><code>elastic_integer&lt;Digits, Narrowest></code> and <code>promoted_integer&lt;Rep></code>
+					can be implemented as aliases of one another.</p>
 				</section>
 
 				<section>
@@ -682,14 +692,15 @@ private:
 							<pre><code class="c++">template&lt;int Digits, class Narrowest=int>
 class tracked_integer;
 
-template&lt;class Rep>
+template&lt;int Digits, class Narrowest>
 class elastic_integer;
 
 template&lt;int Digits, int Exponent, typename Narrowest=int>
 using elastic_fixed_point =
     fixed_point&lt;
         elastic_integer&lt;
-            tracked_integer&lt;Digits, Narrowest>>,
+            Digits,
+            Narrowest>,
         Exponent>;</code></pre>
 					</div>
 				</section>
