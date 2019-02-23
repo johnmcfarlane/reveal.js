@@ -1,0 +1,740 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Fixed-Point Numbers on Embedded Systems</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+                <section>
+                    <h1>Fixed-point Arithmetic</h1>
+                    <h3>John McFarlane</h3>
+                    <h4>2018-03-15, emBO++</h4>
+                </section>
+                <section>
+                    <h2>John McFarlane (me)</h2>
+                    <p>Software Engineer, Jaguar Land Rover, Shannon, Ireland</p>
+                    <p>ISO C++ Study Group 14</p>
+                </section>
+                <section data-transition="fade-in fade-out">
+                    <h2>Background</h2>
+                    <p>BBC BASIC, 6502, C, 80286/7, C++, Python</p>
+                    <p>Games, Fractals, AI, Simulation, APIs, Numerics, CI</p>
+                </section>
+                <section data-transition="fade-in slide-out">
+                    <h3>Contents</h3>
+                    <ol>
+                        <li class="fragment">Bit Parts</li>
+                        <li class="fragment">Fixed-Point Type</li>
+                        <li class="fragment">Sharp Edges</li>
+                    </ol>
+                </section>
+
+                <section data-transition="slide-in fade-out">
+                    <h2>1. Bit Parts</h2>
+                    <div><code>…0.0…</code></div>
+                    <div><code>^</code></div>
+                </section>
+
+                <section>
+                    <h3>1.0. Acting Natural</h3>
+                    <div><code></code>
+                        <span class="fragment">Question: </span>
+                        <span class="fragment">how many <i>digits</i> in <code>uint8_t</code>?</span>
+                    </div>
+                    <div style="opacity:0"><code></code>
+                        <span>Answer: </span>
+                    </div>
+                </section>
+                <section>
+                    <div><code>
+                        <span style="opacity:0">…000000000</span><span>00101010</span>
+                        <span class="fragment"> = </span>
+                        <span class="fragment">32 + 8 + 2</span>
+                    </code></div>
+                </section>
+                <section>
+                    <div><code>
+                        <span style="opacity:0">…000000000</span><span>00101010</span>
+                        <span> = </span>
+                        <span>42</span>
+                        <span style="opacity:0">000000…</span>
+                    </code></div>
+                </section>
+                <section>
+                    <div><code>
+                        <span style="opacity:0">…000000000000</span><span>00101010</span><span style="opacity:0">.00000000000000…</span>
+                    </code></div>
+                </section>
+                <section data-transition="none">
+                    <div><code>
+                        <span style="opacity:.25">…000000000000</span><span>00101010</span><span style="opacity:.25" class="fragment">.00000000000000…</span>
+                    </code></div>
+                </section>
+                <section>
+                    <h3>1.0. Act Natural</h3>
+                    <div><code></code>
+                        <span>Question: </span>
+                        <span>how many <i>digits</i> in <code>uint8_t</code>?</span>
+                    </div>
+                    <div><code></code>
+                        <span>Answer: </span>
+                        <span class="fragment">∞</span><span class="fragment">+8</span><span class="fragment">+∞</span><span class="fragment"> = 2∞+8</span>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>1.1. Be Positive</h3>
+                    <div><code></code>
+                        <span class="fragment">Question: </span>
+                        <span class="fragment">how many <i>sign bits</i> in <code>int8_t</code>?</span>
+                    </div>
+                    <div style="opacity:0"><code></code>
+                        <span>Answer: </span>
+                        <span>∞</span><span>+1</span>
+                    </div>
+                </section>
+                <section>
+                    <div><code>
+                        <span style="opacity:0">…11111111111</span><span>11010110</span>
+                        <span class="fragment"> = </span>
+                        <span class="fragment">-128+64+16+4+2</span>
+                    </code></div>
+                </section>
+                <section>
+                    <div><code>
+                        <span style="opacity:0">…11111111111</span><span>11010110</span><span style="opacity:0">.000000000000000…</span>
+                    </code></div>
+                </section>
+                <section>
+                    <div><code>
+                        <span>…11111111111</span><span style="opacity:.25">11010110.</span><span style="opacity:0">000000000000000…</span>
+                    </code></div>
+                </section>
+                <section>
+                    <div><code>
+                        <span style="opacity:.25">…11111111111</span><span style="opacity:.25">11010110.</span><span style="opacity:1">000000000000000…</span>
+                    </code></div>
+                </section>
+                <section>
+                    <h3>1.1. Be Positive</h3>
+                    <div><code></code>
+                        <span>Question: </span>
+                        <span>how many <i>sign bits</i> in <code>int8_t</code>?</span>
+                    </div>
+                    <div><code></code>
+                        <span>Answer: </span>
+                        <span class="fragment">∞</span><span class="fragment">+1</span>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>1.2. Get Real</h3>
+                    <div>
+                        <span class="fragment">Question: </span>
+                        <span class="fragment">how many <i>significant digits</i> in <code>π</code>?</span>
+                    </div>
+                    <div style="opacity:0">
+                        <span>Answer: </span><span>∞</span><span>+1</span><span>+2</span><span>+∞</span><span>=2∞+3</span>
+                    </div>
+                </section>
+                <section>
+                    <div><code>
+                        <span style="opacity:0">…00000</span><span>11.001001000011111101101010100…</span>
+                    </code></div>
+                </section>
+                <section>
+                    <div><code>
+                        <span style="opacity:0">…0000</span><span style="opacity:.25">0</span><span>11.001001000011111101101010100…</span>
+                    </code></div>
+                </section>
+                <section>
+                    <div><code>
+                        <span style="opacity:.25">…00000</span><span>11.001001000011111101101010100…</span>
+                    </code></div>
+                </section>
+                <section>
+                    <h3>1.2. Get Real</h3>
+                    <div>
+                        <span>Question: </span>
+                        <span>how many <i>significant digits</i> in <code>π</code>?</span>
+                    </div>
+                    <div>
+                        <span>Answer: </span>
+                        <span class="fragment">∞</span>
+                        <span class="fragment">+1</span>
+                        <span class="fragment">+2</span>
+                        <span class="fragment">+∞</span>
+                        <span class="fragment">=2∞+3</span>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>1.3. Floatation Devices</h3>
+                    <div>
+                        <span class="fragment">Question: </span>
+                        <span class="fragment">how many <i>digits</i> in <code>float</code>?</span>
+                    </div>
+                    <div style="opacity:0">
+                        <span>Answer: </span><span>∞</span><span>+1</span><span>+∞</span><span>=2∞+1</span><span>(avg.)</span>
+                    </div>
+                </section>
+                <section>
+                    <div><code>
+                        <span style="opacity:0">…00000</span><span>11.001001000011111101101010100…</span>
+                    </code></div>
+                </section>
+                <section data-transition="none">
+                    <div><code>
+                        <span style="opacity:.25">…00000</span><span style="opacity:.25"></span><span>11.0010010000111111011010</span><span style="opacity:.25">10100…</span>
+                    </code></div>
+                </section>
+                <section data-transition="none">
+                    <div><code>
+                        <span style="opacity:.25">…000001</span><span style="opacity:.25"></span><span>1.0010010000111111011010</span><span style="opacity:.25">10100…</span>
+                    </code></div>
+                </section>
+                <section>
+                    <h3>1.3. Floatation Devices</h3>
+                    <div>
+                        <span>Question: </span>
+                        <span>how many <i>digits</i> in <code>float</code>?</span>
+                    </div>
+                    <div>
+                        <span>Answer: </span>
+                        <span class="fragment">∞</span>
+                        <span class="fragment">+24</span>
+                        <span class="fragment">-1</span>
+                        <span class="fragment">+∞</span>
+                        <span class="fragment">=2∞+23</span>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>1.4. Frame the Problem</h3>
+                    <div>
+                        <span class="fragment">Question: </span>
+                        <span class="fragment">how do you fit 42 in a <code>int8_t</code>?</span>
+                    </div>
+                    <div style="opacity:0"><code></code>
+                        <span>Answer:</span>
+                        <span>with room to grow.</span>
+                    </div>
+                </section>
+                <section>
+                    <div><code>
+                        <span>…00000000000101010.000000…</span>
+                    </code><span style="opacity: 0"><span style="font-size: 200%; display: contents">&#10003;</span></span></div>
+                    <div style="opacity: 0"><code>
+                        <span style="opacity:.25">…0000000000</span><span>0101010</span>.<span style="opacity:1">0</span><span style="opacity:.25">00000…</span>
+                    </code><span style="opacity: 0"><span style="font-size: 200%; display: contents">&#10003;</span></span></div>
+                    <div style="opacity: 0"><code>
+                        <span style="opacity:.25">…00000000</span><span>00010101</span><span style="opacity:.25">0.000000…</span>
+                    </code><span style="font-size: 200%; display: contents; color: green">&#10003;</span></div>
+
+                    <aside class="notes">
+                        Here's a slice of 42.
+                    </aside>
+                </section>
+                <section>
+                    <div><code>
+                        <span style="opacity:.25">…0000000000</span><span>010101</span><span style="opacity:.25">0.000000…</span>
+                    </code><span style="opacity: 0"><span style="font-size: 200%; display: contents">&#10003;</span></span></div>
+                    <div style="opacity: 0"><code>
+                        <span style="opacity:.25">…0000000000</span><span>0101010</span>.<span style="opacity:1">0</span><span style="opacity:.25">00000…</span>
+                    </code><span style="opacity: 0"><span style="font-size: 200%; display: contents">&#10003;</span></span></div>
+                    <div style="opacity: 0"><code>
+                        <span style="opacity:.25">…00000000</span><span>00010101</span><span style="opacity:.25">0.000000…</span>
+                    </code><span style="font-size: 200%; display: contents; color: green">&#10003;</span></div>
+
+                    <aside class="notes">
+                        Here's the minimum slice that is needed store 42.
+                        Note the leftmost zero needed to distinguish it from a negative value.
+                    </aside>
+                </section>
+                <section>
+                    <div><code>
+                        <span style="opacity:.25">…000000000</span><span>00101010</span><span style="opacity:.25">.000000…</span>
+                    </code><span style="opacity: 0"><span style="font-size: 200%; display: contents">&#10003;</span></span></div>
+                    <div class="fragment"><code>
+                        <span style="opacity:.25">…0000000000</span><span>0101010</span>.<span style="opacity:1">0</span><span style="opacity:.25">00000…</span>
+                    </code><span style="opacity: 0"><span style="font-size: 200%; display: contents">&#10003;</span></span></div>
+                    <div class="fragment"><code>
+                        <span style="opacity:.25">…00000000</span><span>00010101</span><span style="opacity:.25">0.000000…</span>
+                    </code><span class="fragment" style="font-size: 200%; display: contents; color: green">&#10003;</span></div>
+
+                    <aside class="notes">
+                        Here's the slice that <code>int8_t</code> uses to store 42.
+                        The minimum slice is a subset of this one.
+                        Therefore, an <code>int8_t</code> can store 42.
+                    </aside>
+                </section>
+                <section>
+                    <h3>1.4. Frame the Problem</h3>
+                    <div>
+                        <span>Question: </span>
+                        <span>how do you fit 42 in a <code>int8_t</code>?</span>
+                    </div>
+                    <div style="opacity:1"><code></code>
+                        <span>Answer:</span>
+                        <span class="fragment">with room to grow.</span>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>1.9.9 Warning</h3>
+                    <h4>Slide Code Ahead</h4>
+                    <img width="192" height="192" data-src="fall-44484_960_720.png" alt="pixabay.com/en/fall-surface-warning-slippery-44484/">
+                    <pre><code class="sh">c++ -std=c++17 -O3 -Wall -Wextra -Werror</code></pre>
+                    <pre><code class="c++">#include &lt;cnl/all.h>
+using namespace cnl;
+using namespace cnl::literals;
+using namespace std;</code></pre>
+
+                    <aside class="notes">
+                        This is your warning that there is slide code ahead.
+                        Don't assume that what you read is what you should write!
+                    </aside>
+                </section>
+
+                <section data-transition="slide-in fade-out">
+                    <h2>2. Type Casting</h2>
+                    <div><code>&lt;O,0></code></div>
+                    <div><code>-</code></div>
+                </section>
+
+                <section>
+                    <h3>2.0. Integers at Scale</h3>
+                    <div><code></code>
+                        <span class="fragment">Question: </span>
+                        <span class="fragment">how can 21 <i>mean</i> 42?</span>
+                    </div>
+                </section>
+                <section>
+                    <div class="fragment"><code>
+                        <span style="opacity:.25">…00000000</span><span>00010101</span><span style="opacity:.25">0.000000…</span>
+                    </code><span class="fragment" style="font-size: 200%; display: contents; color: green">&#10003;</span></div>
+
+                    <div><code><span style="opacity:0.0">&nbsp;</span></code></div>
+
+                    <aside class="notes">
+                        On the face of it, that's a pretty simple simple question with an obvious answer.
+                        We want to scale our integer by a factor of two to get the value we're representing.
+                    </aside>
+                </section>
+                <section>
+                    <div style="display: flex">
+                        <div style="flex: 48%"><pre><code class="c++">int8_t set_value(float value)
+{
+    return value*.5f;
+}
+
+float get_value(int8_t rep)
+{
+    return rep*2.f;
+}</code></pre></div>
+                        <div style="flex: 52%"><pre><code class="arm" data-trim contenteditable>set_value(float):
+        push    {r4, lr}
+        mov     r1, #1056964608
+        bl      __aeabi_fmul
+        bl      __aeabi_f2iz
+        lsl     r0, r0, #24
+        asr     r0, r0, #24
+        pop     {r4, pc}
+get_value(signed char):
+        push    {r4, lr}
+        bl      __aeabi_i2f
+        mov     r1, r0
+        bl      __aeabi_fadd
+        pop     {r4, pc}</code></pre></div>
+                    </div>
+
+                    <a href="https://godbolt.org/z/VqvzG2">godbolt.org/z/VqvzG2</a>
+
+                    <aside class="notes">
+                        Here's the C++ that converts from and to a floating-point number.
+                        And then there's the ARM assembler courtesy of Matt Compiler Explorer.
+
+                        Right away, I can tell you that this code is suboptimal.
+                        We're continually encouraged to do more work with fewer resources.
+                        But you've got to be sure you know how a resource works.
+                        Trying getting by with only one arm or leg if you don't know what I mean.
+                    </aside>
+                </section>
+                <section>
+                    <div style="display: flex">
+                        <div style="flex: 48%"><pre><code class="c++">int    set_value(float value)
+{
+    return value*.5f;
+}
+
+float get_value(int    rep)
+{
+    return rep*2.f;
+}</code></pre></div>
+                        <div style="flex: 52%"><pre><code class="arm" data-trim contenteditable>set_value(float):
+        push    {r4, lr}
+        mov     r1, #1056964608
+        bl      __aeabi_fmul
+        bl      __aeabi_f2iz
+
+
+        pop     {r4, pc}
+get_value(int):
+        push    {r4, lr}
+        bl      __aeabi_i2f
+        mov     r1, r0
+        bl      __aeabi_fadd
+        pop     {r4, pc}</code></pre></div>
+                    </div>
+
+                    <a href="https://godbolt.org/z/NTxk5D">godbolt.org/z/NTxk5D</a>
+
+                    <aside class="notes">
+                        If you take one lesson away from this talk, it's to chose against `int` at your peril.
+                        It's been hand-picked by your toolchain provider to give the best results on your system.
+                        Don't think you can do better unless you're very sure.
+
+                        Although if you take two lessons away, it's that the type system is your friend.
+                        You should use the type system to help you.
+                        Here, `int` is being used to represent something with a scale of two
+                        where normally it represents something with a scale of one.
+                    </aside>
+                </section>
+                <section>
+                    <div style="display: flex">
+                        <div style="flex: 41%"><pre><code class="c++">int set_value(int value)
+{
+    return value/2;
+}
+
+int get_value(int rep)
+{
+    return rep*2;
+}</code></pre></div>
+                        <div style="flex: 59%"><pre><code class="arm" data-trim contenteditable>set_value(int):
+        add     r0, r0, r0, lsr #31
+        asr     r0, r0, #1
+        bx      lr
+get_value(int):
+        lsl     r0, r0, #1
+        bx      lr</code></pre></div>
+                    </div>
+
+                    <a href="https://godbolt.org/z/jBNOhr">godbolt.org/z/jBNOhr</a>
+
+                    <aside class="notes">
+                        Worse still, what if your input value is also an `int`?
+                        Now the input and the output means different things but they're indistinguishable.
+                    </aside>
+                </section>
+                <section>
+                    <div><code style="font-size: 75%"><span style="opacity:.25">…0000000000000</span>000000000000000000000000<span>00010101</span><span style="opacity:.25">0.0…</span></code></div>
+                    <div><code><span class="c++">fixed_point&lt;int, 1>{42}</span></code></div>
+
+                    <aside class="notes">
+                        On the face of it, that's a pretty simple simple question with an obvious answer.
+                        We want to scale our integer by a factor of two to get the value we're representing.
+                    </aside>
+                </section>
+                <section>
+                    <div><pre><code class="c++">fixed_point&lt;int, 1> set_value(int value)
+{
+    return value;
+}
+
+int get_value(fixed_point&lt;int, 1> rep)
+{
+    return static_cast&lt;int>(rep);
+}</code></pre></div>
+                    <div><pre><code class="arm" data-trim contenteditable>set_value(int):
+        add     r0, r0, r0, lsr #31
+        asr     r0, r0, #1
+        bx      lr
+get_value(int):
+        lsl     r0, r0, #1
+        bx      lr</code></pre></div>
+
+                    <a href="https://godbolt.org/z/fpO9aI">godbolt.org/z/fpO9aI</a>
+
+                    <aside class="notes">
+                    </aside>
+                </section>
+
+                <section>
+                    <h3>2.1. The Times They Are a-Changin'</h3>
+                    <div><code></code>
+                        <span class="fragment">Question: </span>
+                        <span class="fragment">what do you get when you multiply six by nine?</span>
+                    </div>
+
+                    <aside class="notes">
+                        For the sake of argument, lets say the answer is fifty four.
+                        How does that look when one of the numbers is not what it seems?
+                    </aside>
+                </section>
+                <section>
+                    <div>
+                        <code><span>6</span><span class="fragment">×</span><span class="fragment">9</span></code>
+                    </div>
+                    <div class="fragment">
+                        <code><span>110</span><span class="fragment">×</span><span class="fragment">101</span></code>
+                    </div>
+                </section>
+                <section>
+                    <div>
+                        <code><span>6</span><span>×</span><span>9</span></code>
+                    </div>
+                    <div>
+                        <code><span>11</span><span style="opacity:.25">0</span><span>×</span><span>101</span></code>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>2.2. Root Planning</h3>
+                    <div><code></code>
+                        <span class="fragment">Question: </span>
+                        <span class="fragment">how far does the queen really move in Chess?</span>
+                    </div>
+
+                    <aside class="notes">
+                    </aside>
+                </section>
+                <section>
+                    <img width="384" height="384" data-src="queen_1.gif" alt="source: chess-poster.com"/>
+                    <img width="384" height="384" data-src="Square_root_of_2_triangle.png" alt="source: commons.wikimedia.org/wiki/File:Square_root_of_2_triangle.png"/>
+                </section>
+                <section>
+                    <div><code style="font-size: 75%">1.414213562373095048801688724209698078569671875…</code></div>
+                    <div class="fragment"><code style="font-size: 75%"><span style="opacity:.25">…0</span>01.011010100000100111100110011001<span style="opacity:.25">11111100111011…</span></code></div>
+                    <div class="fragment"><code style="font-size: 75%" class="c++">fixed_point&lt;int, -30> r {std::sqrt(2)};</code></div>
+
+                    <aside class="notes">
+                        Like many roots, root two is an irrational numbers
+                        which means that when using a single digital number, it can only be approximated.
+                    </aside>
+                </section>
+                <section>
+                    <div><pre><code class="c++">fixed_point&lt;int, -30> a = std::sqrt(2);
+fixed_point&lt;int, -30> b(std::sqrt(2));
+fixed_point&lt;int, -30> c{std::sqrt(2)};
+auto d = fixed_point&lt;int, -30>{std::sqrt(2)};
+auto e = fixed_point&lt;int, -30>(std::sqrt(2));
+auto f = (fixed_point&lt;int, -30>)std::sqrt(2);</code></pre></div>
+                    <div><pre><code class="arm" data-trim contenteditable>f:
+        .word   1518500249
+e:
+        .word   1518500249
+d:
+        .word   1518500249
+c:
+        .word   1518500249
+b:
+        .word   1518500249
+a:
+        .word   1518500249</code></pre></div>
+
+                    <a href="https://godbolt.org/z/Lv2LNi">godbolt.org/z/Lv2LNi</a>
+
+                    <aside class="notes">
+                        As a brief aside there are a large number of ways to initialize variables in C++.
+                        Some might say there are too many. Here are some.
+                        Style *c* is widely encouraged. I also quite like *a*.
+                        *d* is my preference. `auto` is especially useful with types like `fixed_point`.
+                    </aside>
+                </section>
+                <section>
+                    <img width="384" height="384" data-src="queens_distance.jpg" alt="source: chess-poster.com"/>
+                    <a href="https://wandbox.org/permlink/GBY1czkvkZ8jytlS">wandbox.org/permlink/GBY1czkvkZ8jytlS</a>
+
+                    <aside class="notes">
+                        Lets get back to the problem at hand. We wish to measure distance over a chess board.
+                        And diagonals and longer than axials.
+                    </aside>
+                </section>
+                <section>
+                    <div style="display: flex; font-size: 70%">
+                        <div style="flex: 58%"><pre><code class="c++">using Distance = cnl::fixed_point&lt;int, -24>;
+
+Distance queens_distance(int columns, int rows)
+{
+    columns = std::abs(columns);
+    rows = std::abs(rows);
+    int diagonal = std::min(columns, rows);
+    int axial = std::max(columns, rows)-diagonal;
+    return cnl::sqrt2&lt;Distance>*diagonal+axial;
+}</code></pre>
+                            <a href="https://godbolt.org/z/LNyxvH">godbolt.org/z/LNyxvH</a>
+                        </div>
+                        <div style="flex: 42%"><pre><code class="arm" data-trim contenteditable>queens_distance(int, int):
+        cmp     r0, #0
+        rsblt   r0, r0, #0
+        cmp     r1, #0
+        rsblt   r1, r1, #0
+        cmp     r0, r1
+        movlt   ip, r0
+        movge   ip, r1
+        cmp     r0, r1
+        rsbge   r0, ip, r0
+        rsblt   r0, ip, r1
+        ldr     r2, .L3
+        mul     r3, r2, ip
+        add     r0, r3, r0, lsl #24
+        bx      lr
+.L3:
+        .word   23726566</code></pre></div>
+                    </div>
+
+                    <aside class="notes">
+                        This is a fun little function.
+                        There's a measure of how far you have to travel
+                        along city blocks called the Manhattan distance.
+                        The Queen's distance is not related to that.
+
+                        This function returns the total Euclidean distance
+                        a queen Chess piece has to travel to span the given number of rows and columns.
+
+                        Any time the
+
+                        Note about sqrt: technically not allowed to be a constant expression.
+                        But otherwise, this function can be `constexpr`.
+                    </aside>
+                </section>
+                <!--/section>
+
+				<section-->
+
+                <section>
+                    <h3>3.0. Fixing Fixed-point</h3>
+                    <div><code></code>
+                        <span class="fragment">Question: </span>
+                        <span class="fragment">how do you stay in range?</span>
+                    </div>
+                </section>
+                <section>
+                    <pre><code class="c++">auto g = fixed_point&lt;int, -24>{1000};</code></pre>
+                    <div class="fragment"><code style="font-size: 75%"><span style="opacity:.25">…00</span><span>01111101</span><span style="opacity:.25">000.000000000000000000000000000000…</span></code></div>
+                    <div class="fragment"><code style="font-size: 75%"><span style="opacity:.25">…00011</span><span>11101000.000000000000000000000000</span><span style="opacity:.25">000000…</span></code></div>
+                </section>
+                <section>
+                    <pre><code class="c++">auto g = fixed_point&lt;int, -24>{1000};</code></pre>
+                    <div><code style="font-size: 75%"><span style="opacity:.25">…00</span><span>01111101</span><span style="opacity:.25">000.000000000000000000000000000000…</span></code></div>
+                    <div><code style="font-size: 75%"><span style="opacity:.25">…00</span><span style="color: red">011</span><span>11101000.000000000000000000000000</span><span style="opacity:.25">000000…</span></code></div>
+                </section>
+                <section>
+						<pre><code class="c++">int main() {
+    auto g = cnl::fixed_point&lt;int, -24>{1000};
+    std::cout &lt;&lt; g;
+}</code></pre>
+                    <pre class="bash" style="font-size: 50%">g++ prog.cc <span style="opacity:0">-fsanitize=undefined</span> <span style="opacity:0">-fsanitize-undefined-trap-on-error</span></pre>
+
+                    <div class="fragment">
+							<pre style="font-size:35%">-24
+&nbsp;</pre>
+
+                        <a href="https://wandbox.org/permlink/UixSxyf57rYZuU4t">wandbox.org/permlink/UixSxyf57rYZuU4t</a>
+                    </div>
+                </section>
+                <section>
+						<pre><code class="c++">int main() {
+    auto g = cnl::fixed_point&lt;int, -24>{1000};
+    std::cout &lt;&lt; g;
+}</code></pre>
+                    <pre class="bash" style="font-size: 50%">g++ prog.cc <b>-fsanitize=undefined</b> <span style="opacity:0">-fsanitize-undefined-trap-on-error</span></pre>
+
+                    <div class="fragment">
+						<pre style="font-size:35%">cnl.h:1024:55: runtime error: signed integer overflow: 1000 * 16777216 cannot be represented in type 'int'
+-24</pre>
+
+                        <a href="https://wandbox.org/permlink/lcxfAV2cKM7qXrpJ">wandbox.org/permlink/lcxfAV2cKM7qXrpJ</a>
+                    </div>
+                </section>
+                <section>
+						<pre><code class="c++">int main() {
+    auto g = cnl::fixed_point&lt;int, -24>{1000};
+    std::cout &lt;&lt; g;
+}</code></pre>
+                    <pre class="bash" style="font-size: 50%">g++ prog.cc -fsanitize=undefined <b>-fsanitize-undefined-trap-on-error</b></pre>
+
+                    <div class="fragment">
+						<pre style="font-size:35%">Illegal instruction
+&nbsp;</pre>
+
+                        <a href="https://wandbox.org/permlink/8zcxXuqET4OtwrRZ">wandbox.org/permlink/8zcxXuqET4OtwrRZ</a>
+                </section>
+
+                <section>
+                    <h3>3.1. Horses for Courses</h3>
+                    <div><code></code>
+                        <span class="fragment">Question: </span>
+                        <span class="fragment">when <i>don't</i> you want to catch bugs?</span>
+                    </div>
+                </section>
+                <section>
+                    <h4>How to think about Undefined Behavior</h4>
+                    <ul>
+                        <li class="fragment">Undefined behavior isn't a magic feature that makes code faster</li>
+                        <li class="fragment">Undefined behavior standardese for <b>bugs you must avoid</b></li>
+                        <li class="fragment">UBSanitizer traps <i>some</i> bugs</li>
+                        <li class="fragment">You needs good tests to catch the rest</li>
+                        <li class="fragment">Whenever you find a new bug, <b>add a test that fails</b></li>
+                        <li class="fragment">The optimizer assumes you don't write bugs</li>
+                        <li class="fragment">With optimizer on and UBSan off, your code is fast, but it better be bug free!</li>
+                    </ul>
+                </section>
+                <section>
+                    <h4>Guidelines for sanitizing and optimizing</h4>
+                    <ul>
+                        <li class="fragment">In <i>development builds</i> of <i>safety-critical software</i>, do trap, don't optimize</li>
+                        <li class="fragment">In <i>release builds</i> of <i>safety-critical software</i>, do trap, do optimize</li>
+                        <li class="fragment">In <i>development builds</i> of <i>performance-critical software</i>, do trap, don't optimize</li>
+                        <li class="fragment">In <i>release builds</i> of <i>performance-critical software</i>, don't trap, do optimize</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Thank you</h2>
+                    <!--a href="mailto:fixed-point@john.mcfarlane.name">fixed-point@john.mcfarlane.name</a-->
+                    <a href="mailto:jmcfarla@jaguarlandrover.com">jmcfarla@jaguarlandrover.com</a>
+                    <h3>Questions</h3>
+                </section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				transition: 'fade', // none/fade/slide/convex/concave/zoom
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
