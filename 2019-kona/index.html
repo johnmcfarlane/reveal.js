@@ -1,0 +1,1131 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Static Numbers</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h3>Static Numbers</h3>
+					<div>
+						<ol>
+							<p>Papers:</p>
+							<li>P0828R1: <code>elastic_integer</code></li>
+							<li>P0037R6: <code>fixed_point</code></li>
+							<li>P0554R0: Composition</li>
+						</ol>
+					</div>
+				</section>
+
+				<section>
+					<h2>1. P0828R1: <code>elastic_integer</code></h2>
+				</section>
+				<section data-transition="slide-in fade-out">
+					<h3>The Type</h3>
+					<p>integer that <em>generalizes promotion</em> to avoid overflow<code></code></p>
+					<pre><code class="c++">template&lt;int Digits, class Narrowest>
+class elastic_integer {
+  // the actual number of digits allocated
+  static constexpr int digits_ = ...;
+public:
+  using rep = set_digits_t&lt;Narrowest, digits_>;
+  // ...
+private:
+  rep rep_;
+};</code></pre>
+				</section>
+				<section data-transition="fade-in slide-out">
+					<h3>The Type</h3>
+					<p>The gory details of <code>rep</code><a href="https://godbolt.org/z/wd9TNn">.</a></p>
+					<pre><code class="c++">template&lt;int Digits, class Narrowest>
+class elastic_integer {
+  static constexpr int min_digits_ = digits_v&lt;Narrowest>;
+  static constexpr int digits_ = max(min_digits_, Digits);
+public:
+  using rep = set_digits_t&lt;Narrowest, digits_>;
+  // ...
+private:
+  rep rep_;
+};</code></pre>
+				</section>
+				<section data-transition="slide-in none-out">
+					<h3>The Operators</h3>
+					<p>operands promoted to prevent overflow<code></code></p>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 60%">
+							<pre><code class="c++">auto a = elastic_integer&lt;7>{100};
+
+// elastic_integer&lt;14>, uses int32_t
+auto b = a*a;
+</code></pre>
+						</div>
+						<div style="flex: 40%">
+							<pre><code class="c++">movsx   ecx, byte ptr [rdi]
+movsx   eax, byte ptr [rsi]
+imul    eax, ecx
+ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 60%">
+							<pre><code class="c++">auto c = elastic_integer&lt;15>{10000};
+
+// elastic_integer&lt;30>, uses int32_t
+auto d = c*c;</code></pre>
+						</div>
+						<div style="flex: 40%">
+							<pre><code class="c++">movsx   ecx, word ptr [rdi]
+movsx   eax, word ptr [rsi]
+imul    eax, ecx
+ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 60%">
+							<pre><code class="c++">auto e = elastic_integer&lt;31>{1000000000};
+
+// elastic_integer&lt;62>, uses int64_t
+auto f = e*e;</code></pre>
+						</div>
+						<div style="flex: 40%">
+							<pre><code class="c++">movsxd  rcx, dword ptr [rdi]
+movsxd  rax, dword ptr [rsi]
+imul    rax, rcx
+ret</code></pre>
+						</div>
+					</div>
+				</section>
+				<section data-transition="none-in none-out">
+					<h3>The Operators</h3>
+					<p>native promotion to <code>int</code> width is observed</p>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 60%">
+							<pre><code class="c++">auto a = elastic_integer&lt;7>{100};
+
+// elastic_integer&lt;14>, uses int32_t
+auto b = a*a;
+</code></pre>
+						</div>
+						<div style="flex: 40%">
+							<pre><code class="c++">movsx   ecx, byte ptr [rdi]
+movsx   eax, byte ptr [rsi]
+imul    eax, ecx
+ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 60%">
+							<pre><code class="c++">auto c = elastic_integer&lt;15>{10000};
+
+// elastic_integer&lt;30>, uses int32_t
+auto d = c*c;</code></pre>
+						</div>
+						<div style="flex: 40%">
+							<pre><code class="c++">movsx   ecx, word ptr [rdi]
+movsx   eax, word ptr [rsi]
+imul    eax, ecx
+ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%; opacity:.4">
+						<div style="flex: 60%">
+							<pre><code class="c++">auto e = elastic_integer&lt;31>{1000000000};
+
+// elastic_integer&lt;62>, uses int64_t
+auto f = e*e;</code></pre>
+						</div>
+						<div style="flex: 40%">
+							<pre><code class="c++">movsxd  rcx, dword ptr [rdi]
+movsxd  rax, dword ptr [rsi]
+imul    rax, rcx
+ret</code></pre>
+						</div>
+					</div>
+				</section>
+				<section data-transition="fade-in slide-out">
+					<h3>The Operators</h3>
+					<p>further promotion happens when necessary<code></code></p>
+					<div style="display: flex; font-size: 80%; opacity:.4">
+						<div style="flex: 60%">
+							<pre><code class="c++">auto a = elastic_integer&lt;7>{100};
+
+// elastic_integer&lt;14>, uses int32_t
+auto b = a*a;
+</code></pre>
+						</div>
+						<div style="flex: 40%">
+							<pre><code class="c++">movsx   ecx, byte ptr [rdi]
+movsx   eax, byte ptr [rsi]
+imul    eax, ecx
+ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%; opacity:.4">
+						<div style="flex: 60%">
+							<pre><code class="c++">auto c = elastic_integer&lt;15>{10000};
+
+// elastic_integer&lt;30>, uses int32_t
+auto d = c*c;</code></pre>
+						</div>
+						<div style="flex: 40%">
+							<pre><code class="c++">movsx   ecx, word ptr [rdi]
+movsx   eax, word ptr [rsi]
+imul    eax, ecx
+ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 60%">
+							<pre><code class="c++">auto e = elastic_integer&lt;31>{1000000000};
+
+// elastic_integer&lt;62>, uses int64_t
+auto f = e*e;</code></pre>
+						</div>
+						<div style="flex: 40%">
+							<pre><code class="c++">movsxd  rcx, dword ptr [rdi]
+movsxd  rax, dword ptr [rsi]
+imul    rax, rcx
+ret</code></pre>
+						</div>
+					</div>
+				</section>
+
+				<section style="text-align: left">
+					<h3>The Operators</h3>
+					<p>How operands affect width of result:</p>
+					<ul>
+						<ul>
+							<li>widen: <code>+</code>, <code>-</code>, <code>*</code>, <code><<</code><sup>†</sup></li>
+							<li>narrow: <code>>></code><sup>†</sup></li>
+							<li>wider operand: <code>|</code>, <code>^</code></li>
+							<li>narrower operand: <code>&</code>, <code>%</code></li>
+							<li>same: <code>=</code>, <code>@=</code>, <code>++</code>, <code>--</code>, <code>~</code>, </li>
+							<li>Boolean: <code>&&</code>, <code>||</code>, <code><=></code> etc.</li>
+							<li>1st operand: <code>/</code></li>
+						</ul>
+					</ul>
+					<ul style="font-size: 50%">
+						<li>There's a separate set of rules for signedness of result</li>
+						<li><sup>†</sup>when 2nd operand is <code>integral_constant</code></li>
+					</ul>
+				</section>
+
+				<section style="text-align: left">
+					<h3>Run-time Overflow</h3>
+					<p>some operations cannot avoid overflow, e.g.</p>
+					<div><ul>
+						<li>assignment</li>
+						<li>conversion</li>
+						<li>bitwise shift left<sup>†</sup></li>
+						<li>some compound assignment</li>
+						<li>increment/decrement</li>
+					</ul></div>
+					<p style="font-size: 50%"><sup>†</sup>unless 2nd operand is <code>integral_constant</code></p>
+				</section>
+
+				<section>
+					<h3>Run-time Overflow</h3>
+					<p>Run-time range errors are a separate concern.</p>
+					<p>A complete safety solution is a composite type.</p>
+					<pre><code class="c++">// Overflow is a contract violation.
+template&lt;class Rep>
+class overflow_integer;
+
+// a type that widens when it can, and traps when it can't
+template&lt;int Digits, class Narrowest=int>
+using safe_integer =
+    overflow_integer&lt;elastic_integer&lt;Digits, Narrowest>>;</code></pre>
+					<p>(see P0554)</p>
+				</section>
+
+				<section>
+					<h3>Further Composition</h3>
+					<p>static arbitrarily wide integer</p>
+					<pre><code class="c++">// similar type to P0539
+template&ltint Digits=31, class Narrowest=int>
+class wide_integer;
+
+// a type that widens arbitrarily
+template&lt;int Digits, class Narrowest=int>
+using wide_elastic_integer =
+    elastic_integer&lt;Digits, wide_integer&lt;1, Narrowest>>;</code></pre>
+				</section>
+
+				<section style="text-align: left">
+					<h3>Most Negative Number</h3>
+					<p>MNN poses a dilemma</p>
+					<div><ul>
+						<li>rare edge case</li>
+						<li>is costly to test at run-time</li>
+						<li>promotion-based avoidance costs bits</li>
+						<li>making it an illegal value is appealing</li>
+					</ul></div>
+				</section>
+				<section style="text-align: left">
+					<h3>Numeric Traits</h3>
+					<p>How do you manipulate number of digits?</p>
+					<ul>
+						<li>new traits</li>
+						<ul style="font-size: 75%">
+							<li><code>digits_v&ltT></code> - P0437-friendly <code>numeric_limits::digits</code></li>
+							<li><code>set_digits_t&ltT, int Digits></code> - type with at least that many digits</li>
+						</ul>
+						<li>existing traits</li>
+						<ul style="font-size: 75%">
+							<li><code>make_signed_t</code>/<code>make_unsigned_t</code></li>
+							<li><code>is_signed_v</code>/<code>is_unsigned_v</code></li>
+						</ul>
+					</ul>
+				</section>
+				<section>
+					<h3>Late-breaking Revision</h3>
+					<ul style="text-align: left; font-size: 75%">
+						<li>Where <code>Rep</code> already counts its bits (e.g. <code>wide_integer</code>),
+							there is no need for <code>elastic_integer</code> to do that work too.</li>
+						<li>So <code>elastic_integer&lt;Digits, Narrowest></code> can be replaced by <code>promoted_integer&lt;Rep></code></li>
+						<li>But where <code>Rep</code> doesn't counts its bits (e.g. <code>int</code>),
+							there will need to be an additional wrapper that does only bit tracking.</li>
+						<li><code>elastic_integer&lt;Digits, Narrowest></code> and <code>promoted_integer&lt;Rep></code>
+							can be implemented as aliases of one another.</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>2. P0037R6: <code>fixed_point</code></h2>
+				</section>
+				<section>
+					<h3>The Type</h3>
+					<p>scales integers to approximate real-numbers</p>
+					<pre><code class="c++">template&lt;class Rep=int, int Exponent=0, int Radix=2>
+class fixed_point;</code></pre>
+					<pre><code class="c++">template&lt;class Rep, int Exponent, int Radix>
+class fixed_point {
+public:
+  using rep = Rep;
+  ...
+private:
+  rep rep_;  // value is rep_*Radix^Exponent
+};</code></pre>
+				</section>
+
+				<section>
+					<h3>The Type</h3>
+					<p>Like a span of digits over a number...</p>
+					&nbsp;
+					<div><code class="c++">fixed_point&lt;short, -8> a = 10.75</code></div>
+					&nbsp;
+					<div><code style="font-size: 85%">
+						<span style="opacity:0.25">…000000000000</span>00001010.11000000<span style="opacity:0.25">000000000000…</span>
+					</code></div>
+				</section>
+
+				<section>
+					<h3>The Type</h3>
+					<p>Becomes an integer when <code>Exponent=0</code>...</p>
+					&nbsp;
+					<div><code class="c++">fixed_point&lt;int, 0> b = 42</code></div>
+					&nbsp;
+					<div><code style="font-size: 85%">
+						<span style="opacity:0.25">…0000000</span>00000000000000000000000000101010<span style="opacity:0.25">.0000000…</span>
+					</code></div>
+				</section>
+
+				<section data-transition="slide-in none-out">
+					<h3>Conversion</h3>
+					<p><code></code>conversion to/from integer scales</p>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 50%">
+							<pre><code class="c++">fixed_point&lt;int, -16> from_int(int n)
+{
+    return n;
+}</code></pre>
+						</div>
+						<div style="flex: 50%">
+							<pre><code class="c++">from_int(int):
+	mov     eax, edi
+	sal     eax, 16
+	ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 50%">
+							<pre><code class="c++">int to_int(fixed_point&lt;int, -16> f)
+{
+    return static_cast&lt;int>(f);
+}</code></pre>
+						</div>
+						<div style="flex: 50%">
+							<pre><code class="c++">to_int(cnl::fixed_point&lt;int, -16, 2>):
+	test    edi, edi
+	lea     eax, [rdi+65535]
+	cmovns  eax, edi
+	sar     eax, 16
+	ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%; opacity: 0">
+						<div style="flex: 50%">
+							<pre><code class="c++">int to_int(fixed_point&lt;int, -16> f)
+{
+    Expects(f>=0);
+    return static_cast&lt;int>(f);
+}</code></pre>
+						</div>
+						<div style="flex: 50%">
+							<pre><code class="c++">to_int(cnl::fixed_point&lt;int, -16, 2>):
+	mov     eax, edi
+	sar     eax, 16
+	ret</code></pre>
+						</div>
+					</div>
+				</section>
+				<section data-transition="fade">
+					<h3>Conversion</h3>
+					<p><code></code>-ve right-shift prevents efficient down-scaling</p>
+					<div style="display: flex; font-size: 80%; opacity: .4">
+						<div style="flex: 50%">
+							<pre><code class="c++">fixed_point&lt;int, -16> from_int(int n)
+{
+    return n;
+}</code></pre>
+						</div>
+						<div style="flex: 50%">
+							<pre><code class="c++">from_int(int):
+	mov     eax, edi
+	sal     eax, 16
+	ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 50%">
+							<pre><code class="c++">int to_int(fixed_point&lt;int, -16> f)
+{
+    return static_cast&lt;int>(f);
+}</code></pre>
+						</div>
+						<div style="flex: 50%">
+							<pre><code class="c++">to_int(cnl::fixed_point&lt;int, -16, 2>):
+	test    edi, edi
+	lea     eax, [rdi+65535]
+	cmovns  eax, edi
+	sar     eax, 16
+	ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%; opacity: 0">
+						<div style="flex: 50%">
+							<pre><code class="c++">int to_int(fixed_point&lt;int, -16> f)
+{
+    Expects(f>=0);
+    return static_cast&lt;int>(f);
+}</code></pre>
+						</div>
+						<div style="flex: 50%">
+							<pre><code class="c++">to_int(cnl::fixed_point&lt;int, -16, 2>):
+        mov     eax, edi
+        sar     eax, 16
+        ret</code></pre>
+						</div>
+					</div>
+				</section>
+				<section data-transition="fade-in slide-out">
+					<h3>Conversion</h3>
+					<p><code>Rep</code> must be unsigned or known non-negative</p>
+					<div style="display: flex; font-size: 80%; opacity: .1">
+						<div style="flex: 50%">
+							<pre><code class="c++">fixed_point&lt;int, -16> from_int(int n)
+{
+    return n;
+}</code></pre>
+						</div>
+						<div style="flex: 50%">
+							<pre><code class="c++">from_int(int):
+	mov     eax, edi
+	sal     eax, 16
+	ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%; opacity: .5">
+						<div style="flex: 50%">
+							<pre><code class="c++">int to_int(fixed_point&lt;int, -16> f)
+{
+    return static_cast&lt;int>(f);
+}</code></pre>
+						</div>
+						<div style="flex: 50%">
+							<pre><code class="c++">to_int(cnl::fixed_point&lt;int, -16, 2>):
+	test    edi, edi
+	lea     eax, [rdi+65535]
+	cmovns  eax, edi
+	sar     eax, 16
+	ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 50%">
+							<pre><code class="c++">int to_int(fixed_point&lt;int, -16> f)
+{
+    Expects(f>=0);
+    return static_cast&lt;int>(f);
+}</code></pre>
+						</div>
+						<div style="flex: 50%">
+							<pre><code class="c++">to_int(cnl::fixed_point&lt;int, -16, 2>):
+        mov     eax, edi
+        sar     eax, 16
+        ret</code></pre>
+						</div>
+					</div>
+				</section>
+
+				<section data-transition="slide-in fade-out">
+					<h3>The Operators</h3>
+					<p>Arithmetic operators are pass-throughs<a href="https://godbolt.org/z/lSvmsl">.</a></p>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 50%">
+							<pre><code class="c++">auto add(int l,
+         int r) {
+
+    return l+r;
+}</code></pre>
+						</div>
+						<div style="flex: 50%">
+							<pre><code class="c++">add:
+	lea     eax, [rdi+rsi]
+	ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 50%">
+							<pre><code class="c++">auto mult(int l,
+          int r) {
+
+    return l*r;
+}</code></pre>
+						</div>
+						<div style="flex: 50%">
+							<pre><code class="c++">mult:
+	mov     eax, edi
+	imul    eax, esi
+	ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 50%">
+							<pre><code class="c++">auto divide(int l,
+            int r) {
+
+    return l/r;
+}</code></pre>
+						</div>
+						<div style="flex: 50%">
+							<pre><code class="c++">divide:
+	mov     eax, edi
+	cdq
+	idiv    esi
+	ret</code></pre>
+						</div>
+					</div>
+				</section>
+				<section data-transition="fade">
+					<h3>The Operators</h3>
+					<p>Arithmetic overloads are pass-throughs<a href="https://godbolt.org/z/MamRWT">.</a></p>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 50%">
+							<pre><code class="c++">auto add(fixed_point&lt;int, -8> l,
+         fixed_point&lt;int, -8> r) {
+    // returns fixed_point&lt;int, -8>
+    return l+r;
+}</code></pre>
+						</div>
+						<div style="flex: 50%">
+							<pre><code class="c++">add:
+	lea     eax, [rdi+rsi]
+	ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 50%">
+							<pre><code class="c++">auto mult(fixed_point&lt;int, -8> l,
+          fixed_point&lt;int, -8> r) {
+    // returns fixed_point&lt;int, -16>
+    return l*r;
+}</code></pre>
+						</div>
+						<div style="flex: 50%">
+							<pre><code class="c++">mult:
+	mov     eax, edi
+	imul    eax, esi
+	ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 50%">
+							<pre><code class="c++">auto divide(fixed_point&lt;int, -8> l,
+            fixed_point&lt;int, -8> r) {
+    // returns fixed_point&lt;int, 0>
+    return l/r;
+}</code></pre>
+						</div>
+						<div style="flex: 50%">
+							<pre><code class="c++">divide:
+	mov     eax, edi
+	cdq
+	idiv    esi
+	ret</code></pre>
+						</div>
+					</div>
+				</section>
+				<section data-transition="fade">
+					<h3>The Operators</h3>
+					<p>Multiplication is lossless but susceptible to overflow<a href="https://godbolt.org/z/MamRWT">.</a></p>
+					<div style="display: flex; font-size: 80%; opacity: .4">
+						<div style="flex: 50%">
+							<pre><code class="c++">auto add(fixed_point&lt;int, -8> l,
+         fixed_point&lt;int, -8> r) {
+    // returns fixed_point&lt;int, -8>
+    return l+r;
+}</code></pre>
+						</div>
+						<div style="flex: 50%">
+							<pre><code class="c++">add:
+	lea     eax, [rdi+rsi]
+	ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 50%">
+							<pre><code class="c++">auto mult(fixed_point&lt;int, -8> l,
+          fixed_point&lt;int, -8> r) {
+    // returns fixed_point&lt;int, -16>
+    return l*r;
+}</code></pre>
+						</div>
+						<div style="flex: 50%">
+							<pre><code class="c++">mult:
+	mov     eax, edi
+	imul    eax, esi
+	ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%; opacity: .4">
+						<div style="flex: 50%">
+							<pre><code class="c++">auto divide(fixed_point&lt;int, -8> l,
+            fixed_point&lt;int, -8> r) {
+    // returns fixed_point&lt;int, 0>
+    return l/r;
+}</code></pre>
+						</div>
+						<div style="flex: 50%">
+							<pre><code class="c++">divide:
+	mov     eax, edi
+	cdq
+	idiv    esi
+	ret</code></pre>
+						</div>
+					</div>
+				</section>
+				<section data-transition="fade-in slide-out">
+					<h3>The Operators</h3>
+					<p>Division is surprising<a href="https://godbolt.org/z/MamRWT">.</a></p>
+					<div style="display: flex; font-size: 80%; opacity: .4">
+						<div style="flex: 50%">
+							<pre><code class="c++">auto add(fixed_point&lt;int, -8> l,
+         fixed_point&lt;int, -8> r) {
+    // returns fixed_point&lt;int, -8>
+    return l+r;
+}</code></pre>
+						</div>
+						<div style="flex: 50%">
+							<pre><code class="c++">add:
+	lea     eax, [rdi+rsi]
+	ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%; opacity: .4">
+						<div style="flex: 50%">
+							<pre><code class="c++">auto mult(fixed_point&lt;int, -8> l,
+          fixed_point&lt;int, -8> r) {
+    // returns fixed_point&lt;int, -16>
+    return l*r;
+}</code></pre>
+						</div>
+						<div style="flex: 50%">
+							<pre><code class="c++">mult:
+	mov     eax, edi
+	imul    eax, esi
+	ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 50%">
+							<pre><code class="c++">auto divide(fixed_point&lt;int, -8> l,
+            fixed_point&lt;int, -8> r) {
+    // returns fixed_point&lt;int, 0>
+    return l/r;
+}</code></pre>
+						</div>
+						<div style="flex: 50%">
+							<pre><code class="c++">divide:
+	mov     eax, edi
+	cdq
+	idiv    esi
+	ret</code></pre>
+						</div>
+					</div>
+				</section>
+
+				<section>
+					<h3>Composition</h3>
+					<ul>
+						<li>Problems faced by <code>fixed_point</code> are orthogonal</li>
+						<li><code>int</code> already suffers from them</li>
+						<li>They become acute when using <code>int</code> to replace <code>float</code></li>
+						<li>Easiest to solve is multiplication...</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>Lossless Multiplication</h3>
+					<div>
+							<pre><code class="c++">template&lt;int Digits, class Narrowest=int>
+class elastic_integer;
+
+template&lt;int Digits, int Exponent, typename Narrowest=int>
+using elastic_fixed_point =
+    fixed_point&lt;
+        elastic_integer&lt;
+            Digits,
+            Narrowest>,
+        Exponent>;</code></pre>
+					</div>
+				</section>
+
+				<section data-transition="slide-in fade-out">
+					<h3>Lossless Multiplication</h3>
+					<p>No risk of overflow; no loss of precision<a href="https://godbolt.org/z/PPesiD">.</a></p>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 60%">
+							<pre><code class="c++">auto add(elastic_fixed_point&lt;31, -16> l,
+         elastic_fixed_point&lt;31, -16> r) {
+    // returns elastic_fixed_point&lt;32, -16>
+    return l+r;
+}</code></pre>
+						</div>
+						<div style="flex: 40%">
+							<pre><code class="c++">add:
+	movsx   rsi, esi
+	movsx   rax, edi
+	add     rax, rsi
+	ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 60%">
+							<pre><code class="c++">auto mult(elastic_fixed_point&lt;31, -16> l,
+          elastic_fixed_point&lt;31, -16> r) {
+    // returns elastic_fixed_point&lt;62, -32>
+    return l*r;
+}</code></pre>
+						</div>
+						<div style="flex: 40%">
+							<pre><code class="c++">mult:
+	movsx   rax, esi
+	movsx   rdi, edi
+	imul    rax, rdi
+	ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 60%">
+							<pre><code class="c++">auto divide(elastic_fixed_point&lt;31, -16> l,
+            elastic_fixed_point&lt;31, -16> r) {
+    // returns elastic_fixed_point&lt;31, 0>
+    return l/r;
+}</code></pre>
+						</div>
+						<div style="flex: 40%">
+							<pre><code class="c++">divide:
+	mov     eax, edi
+	cdq
+	idiv    esi
+	ret</code></pre>
+						</div>
+					</div>
+				</section>
+
+				<section data-transition="fade-in slide-out">
+					<h3>Lossless Multiplication</h3>
+					<p>Wrapper over simple integer arithmetic<a href="https://godbolt.org/z/0RQ5YD">.</a></p>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 60%">
+							<pre><code class="c++">auto add(int l,
+         int r) {
+
+    return (long long)l+r;
+}</code></pre>
+						</div>
+						<div style="flex: 40%">
+							<pre><code class="c++">add:
+	movsx   rsi, esi
+	movsx   rax, edi
+	add     rax, rsi
+	ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 60%">
+							<pre><code class="c++">auto mult(int l,
+          int r) {
+
+    return (long long)l*r;
+}</code></pre>
+						</div>
+						<div style="flex: 40%">
+							<pre><code class="c++">mult:
+	movsx   rax, esi
+	movsx   rdi, edi
+	imul    rax, rdi
+	ret</code></pre>
+						</div>
+					</div>
+					<div style="display: flex; font-size: 80%">
+						<div style="flex: 60%">
+							<pre><code class="c++">auto divide(int l,
+            int r) {
+
+    return l/r;
+}</code></pre>
+						</div>
+						<div style="flex: 40%">
+							<pre><code class="c++">divide:
+	mov     eax, edi
+	cdq
+	idiv    esi
+	ret</code></pre>
+						</div>
+					</div>
+				</section>
+
+				<section>
+					<h3><code>fixed_point</code> Division</h3>
+					<p>vs</p>
+					<h3>'Quasi-Exact' Division</h3>
+					<p>Subject of P1368R0</p>
+					<ul>
+						<li>Quasi-exact division pre-widens dividend</li>
+						<li>Avoids imprecise results where possible</li>
+						<li>Typically <i>feels</i> like floating-point division</li>
+						<li><code>fixed_point</code> supports, but not for <code>operator/</code></li>
+						<li>Finance is compelling case for <code>fixed_point</code> division</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>'Quasi-Exact' Division</h3>
+					<p>Multiply: operand digits <i>contribute</i> to result</p>
+					<pre><code>5.5 * 5.5 = 30.25
+55. * .55 = 30.25
+5.5 * 55. = 302.5
+
+AAA.BBBBB * CCCCCC.DD = AAACCCCCC.BBBBBDD</code></pre>
+					<p>Division: operand digits <i>cross-contribute</i> to result</p>
+
+					<pre><code>10 / 100 = 00.10
+1 / 1000 = 0.001
+
+AAA.BBBBB / CCCCCC.DD = AAADD.BBBBBCCCCCC</code></pre>
+				</section>
+
+
+
+				<section data-transition="slide-in fade-out">
+					<h3><code>fixed_point</code> Division<a href="https://godbolt.org/z/ltPmw4">.</a></h3>
+					<p>$0.80 / $0.25 = 3 r $0.05</p>
+					<pre><code>template&lt;int Exponent>
+using currency = fixed_point&lt;int, Exponent, 10>;
+
+auto n = currency<-2>(.80);
+auto d = currency<-2>(.25);
+
+auto q = n / d;  // currency<0>(3)
+auto r = n % d;  // currency<-2>(.05)
+</code></pre>
+				</section>
+
+				<section data-transition="fade-in slide-out">
+					<h3><code>fixed_point</code> Division<a href="https://godbolt.org/z/qgf5qd">.</a></h3>
+					<p>$0.80 / 3 = $0.26 r $0.02</p>
+					<pre><code>template&lt;int Exponent>
+using currency = fixed_point&lt;int, Exponent, 10>;
+
+auto n = currency<-2>(.80);
+auto d = currency<0>(3);
+
+auto q = n / d;  // currency<-2>(.26)
+auto r = n % d;  // currency<-2>(.02)
+</code></pre>
+				</section>
+				
+				<section>
+					<h3>As an alternative to <code>float</code></h3>
+					<ul style="font-size: 95%">
+						<li>Floating-point uses as much as 10× silicon and energy</li>
+						<li>Fixed-point is sometimes faster, sometimes slower</li>
+						<li>Applications include finance, CNNs, FPGAs, DSPs</li>
+						<li>Plus modelling of systems with determinism and tight control over precision</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>Late-breaking Changes</h3>
+					<ul>
+						<li>Avoid use of name <code>fixed_point</code>: carries baggage from P0106</li>
+						<li>Replace <code>fixed_point</code> type with <code>scaled_integer</code></li>
+						<li>Replaces <code>Rep</code> and <code>Exponent</code> with <code>Scale</code></li>
+						<li><code>Scale</code> is a concept that includes <code>ratio</code></li>
+					</ul>
+				</section>
+				<section>
+					<h3>Scaled Integer</h3>
+					<p style="font-size: 75%">This includes <code>fixed_point</code> but also describes something much like <code>chrono::duration</code>.</p>
+					<div><pre><code class="c++">template&lt;class Rep, class Scale>
+class scaled_integer;
+
+template&lt;intmax_t Exponent=0, int Radix=2>
+class power_scale;
+
+template&lt;class Rep, intmax_t Exponent=0, int Radix=2>
+using fixed_point = scaled_integer&lt;Rep, power_scale&lt;Exponent, Radix>>;
+
+// illustration purposes only
+template&lt;class Rep, class Period=ratio<1>>
+using duration = scaled_integer&lt;Rep, Period>;</code></pre></div>
+					<p style="font-size: 75%">Other examples include closed range units such as 8-bit color components
+						which express the range [0..1] using [0..255].</p>
+				</section>
+
+				<!--P0037R6: fixed_point (or scaled_integer) <http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p0037r6.html>
+					- ~~nothing but scale tracking and shifting for addition/subtraction~~
+					- examples (as in P1368R0)
+					- even a conversion to/from another arithmetic type is optional given access to the scale
+					- same exponentiation/accumulation impossibility
+					- ~~can be used for fixed-point approximation to real numbers~~
+					- performance superior to floating-point per joule and perhaps per second
+					- Euclidean-like division and remainder, as for integers; they do not have the normal mathematical meaning for real numbers
+					- another type could be used to give / and % real-number meanings with default precision strategies
+					- merits of quasi-exact division, but also the problems with it (mostly performance)
+					- possibility of tagged division (mostly a reference to P1050)
+
+					- the difficult second parameter-->
+
+				<section>
+					<h2>3. P0554R0: Composition</h2>
+				</section>
+				<section>
+					<h3>Background</h3>
+					<ul style="font-size: 75%">
+						<li>Two competing fixed-point papers presented in Jacksonville 2016:</li>
+						<ul>
+							<li>P0106R0 proposed few types that each bundled many features</li>
+							<li>P0037R1 proposed a single type which addressed a single concern</li>
+						</ul>
+						<li>SG6 <a href="http://wiki.edg.com/bin/view/Wg21jacksonville/SG6Minutes">asked</a> authors to coordinate</li>
+						<li>P0554 was written to explain:</li>
+						<ul>
+							<li>why library types should address a single concern</li>
+							<li>how they could be combined to address multiple concerns</li>
+							<li>what the individual concerns (and therefore types) are</li>
+						</ul>
+						<li>Was <a href="http://wiki.edg.com/bin/view/Wg21kona2017/SG6HigherTypes?twiki_redirect_cache=c0a8ceb79922fe972b3c4dbe2f8a42c3">presented</a> in Kona 2017</li>
+						<li>Fell off the radar</li>
+						<li>Details are out of date but the paper is still relevant</li>
+						<li>Provides a context for P0037 and P0828</li>
+					</ul>
+				</section>
+				<section>
+					<h3>Motivation</h3>
+					<ul>
+						<li>Subject is fixed-size numeric types</li>
+						<li>A well-established list of concerns exists</li>
+						<li>They typically enhance integers in some way</li>
+						<li>Make them class templates with integer as parameter</li>
+						<li>Allows any 3rd-party or non-standard integers to be used (DSPs, Boost.Multiprecision, std::pack)</li>
+						<li>Allows chaining of one type </i>within</i> another to build up functionality</li>
+						<li>Referred to as <i>The Compositional Approach</i></li>
+					</ul>
+				</section>
+				<section>
+					<h3>The Compositional Approach</h3>
+					<ul style="font-size: 90%">
+						<li>All numeric types are <i>Components</i></li>
+						<li>Can be used as parameters in wrapper types</li>
+						<li>These in turn make new <i>components</i></li>
+						<li>Wrappers can be chained together to make <i>composites</i></li>
+						<li>Not all combinations work or are useful</li>
+						<li>A named set of components is proposed</li>
+						<li>Ultimate goal (for some) is a pair of composites:</li>
+						<ul>
+							<li><code>static_integer</code> - a 'smart' integer</li>
+							<li><code>static_number</code> - a 'smart' real number approximation</li>
+						</ul>
+					</ul>
+				</section>
+				<section>
+					<h3>The Concerns</h3>
+					<p>The main concerns to be addressed:</p>
+					<ul style="font-size: 90%">
+						<li>Run-time handling of out-of-range errors</li>
+						<li>More consistent promotion rules to prevent range errors</li>
+						<li>Arbitrary-width integers</li>
+						<li>Scaled integers to approximate real numbers</li>
+						<li>'Quasi-exact' division of fixed-point numbers</li>
+						<li>Rounding</li>
+					</ul>
+				</section>
+				<section>
+					<h3>Out-of-range<sup>†</sup> Handling</h3>
+					<div><pre><code class="c++">template&lt;class Rep, class Tag=contract_tag>
+class overflow_integer;
+
+// makes out-of-range a pre/post-condition violation
+struct contract_tag;
+
+// clamps out-of-range values to minimum/maximum value
+struct saturate_tag;
+
+// wraps out-of-range value a la unsigned
+struct modulo_tag;
+
+// saturates and stays saturated (like IEEE 754)
+struct sticky_tag;</code></pre></div>
+					<p style="font-size: 50%"><sup>†</sup>Overflow is a problematic term because unsigned integers don't overflow.</p>
+				</section>
+				<section>
+					<h3>Out-of-range Avoidance</h3>
+					<p>Subject of P0828</p>
+					<div><pre><code class="c++">template&lt;int Digits, class Narrowest=int>
+class elastic_integer;</code></pre></div>
+				</section>
+				<section>
+					<h3>Wide Integers</h3>
+					<p>A.K.A. fixed-size bignum; associated with multi-word</p>
+					<div><pre><code class="c++">template&lt;int Digits, class Narrowest>
+class wide_integer;</code></pre></div>
+					<p style="text-align: left; font-size: 50%"><code>Narrowest</code> denotes the least wide representational type to use.
+						For example, <code>wide_integer&lt;12, short></code>, would fit into 2 bytes.
+						However, <code>wide_integer&lt;24, short></code>, would use at least 4 bytes.</p>
+				</section>
+				<section>
+					<h3>Scaled Integers</h3>
+					<p>Subject of P0037</p>
+					<div><pre><code class="c++">template&lt;class Rep, int Exponent, int Radix>
+class fixed_point;</code></pre></div>
+				</section>
+				<section>
+					<h3>Rounding</h3>
+					<p>Consistent rounding following float-to-int, right-shift and division operations.</p>
+					<div><pre><code class="c++">template&lt;class Rep, class Tag=nearest_tag>
+class rounding_integer;
+
+struct nearest_tag;     // traditional round-to-nearest
+struct native_tag;      // do whatever Rep 'wants'
+struct truncate_tag;    // lop off the fractional part
+struct round_down_tag;  // toward -ve infinity
+// etc.</code></pre></div>
+				</section>
+				<section>
+					<h3>Composite Type</h3>
+					<p><code>static_integer</code> is similar to P0106's <code>integral</code>.</p>
+					<div><pre><code class="c++">template&lt;
+    int Digits = digits&lt;int>::value,
+    class RoundingTag = nearest_tag,
+    class OverflowTag = contract_tag,
+    class Narrowest = int>
+using static_integer =
+  rounding_integer&lt;
+    overflow_integer&lt;
+      elastic_integer&lt;
+        Digits,
+        wide_integer&lt;1, Narrowest>>,
+      OverflowTag>,
+    RoundingTag>;</code></pre></div>
+				</section>
+				<section>
+					<h3>Composite Type</h3>
+					<p><code>static_number</code> is similar to P0106's <code>negatable</code>.</p>
+					<div><pre><code class="c++">template&lt;
+    int Digits,
+    int Exponent = 0,
+    class RoundingTag = nearest_tag,
+    class OverflowTag = contract_tag,
+    class Narrowest = int>
+using static_number =
+  fixed_point&lt;
+    static_integer&lt;
+      Digits,
+      RoundingTag,
+      OverflowTag,
+      Narrowest>,
+    Exponent>;</code></pre></div>
+				</section>
+
+				<!--P0554R0: composition <http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0554r0.html>
+
+					- Start with any numeric type
+					- Use it as a parameter in a compositional template
+					- The result is a numeric type
+					- Chain several templates as needed
+					- Not all combinations...
+
+					- fixed-point can easily overflow due to scale change (e.g., probabilities)
+					- fixed-point may or may not need rounding
+					- over-wide integers are useful unto themselves (e.g., for cryptography)
+					- custom types can favor memory economy or restrict width growth
+					- more exotic integer types like simd work (in some nesting orders)
+					- set of policies is extensible
+					- avoids accidental inclusion of abstraction cost, but risks additional cost from separate implementations of each abstraction
+					- the mention of quasi-exact division is outdated
+
+					- 13-bit integers
+				</section-->
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
