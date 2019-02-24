@@ -6,18 +6,18 @@
 
 		<title>Static Numbers</title>
 
-		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+		<link rel="stylesheet" href="../css/reveal.css">
+		<link rel="stylesheet" href="../css/theme/black.css">
 
 		<!-- Theme used for syntax highlighting of code -->
-		<link rel="stylesheet" href="lib/css/zenburn.css">
+		<link rel="stylesheet" href="../lib/css/zenburn.css">
 
 		<!-- Printing and PDF exports -->
 		<script>
 			var link = document.createElement( 'link' );
 			link.rel = 'stylesheet';
 			link.type = 'text/css';
-			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? '../css/print/pdf.css' : '../css/print/paper.css';
 			document.getElementsByTagName( 'head' )[0].appendChild( link );
 		</script>
 	</head>
@@ -41,7 +41,7 @@
 				</section>
 				<section data-transition="slide-in fade-out">
 					<h3>The Type</h3>
-					<p>integer that <em>generalizes promotion</em> to avoid overflow<code></code></p>
+					<p style="font-size: 85%">integer that <em>generalizes promotion</em> to avoid overflow<code></code></p>
 					<pre><code class="c++">template&lt;int Digits, class Narrowest>
 class elastic_integer {
   // the actual number of digits allocated
@@ -55,7 +55,7 @@ private:
 				</section>
 				<section data-transition="fade-in slide-out">
 					<h3>The Type</h3>
-					<p>The gory details of <code>rep</code><a href="https://godbolt.org/z/wd9TNn">.</a></p>
+					<p style="font-size: 85%">The gory details of <code>rep</code><a href="https://godbolt.org/z/wd9TNn">.</a></p>
 					<pre><code class="c++">template&lt;int Digits, class Narrowest>
 class elastic_integer {
   static constexpr int min_digits_ = digits_v&lt;Narrowest>;
@@ -244,8 +244,10 @@ ret</code></pre>
 
 				<section>
 					<h3>Run-time Overflow</h3>
+					<div style="font-size: 75%">
 					<p>Run-time range errors are a separate concern.</p>
 					<p>A complete safety solution is a composite type.</p>
+					</div>
 					<pre><code class="c++">// Overflow is a contract violation.
 template&lt;class Rep>
 class overflow_integer;
@@ -351,7 +353,7 @@ private:
 
 				<section data-transition="slide-in none-out">
 					<h3>Conversion</h3>
-					<p><code></code>conversion to/from integer scales</p>
+					<p style="font-size: 85%"><code></code>conversion to/from integer scales</p>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 50%">
 							<pre><code class="c++">fixed_point&lt;int, -16> from_int(int n)
@@ -400,7 +402,7 @@ private:
 				</section>
 				<section data-transition="fade">
 					<h3>Conversion</h3>
-					<p><code></code>-ve right-shift prevents efficient down-scaling</p>
+					<p style="font-size: 85%"><code></code>-ve right-shift prevents efficient down-scaling</p>
 					<div style="display: flex; font-size: 80%; opacity: .4">
 						<div style="flex: 50%">
 							<pre><code class="c++">fixed_point&lt;int, -16> from_int(int n)
@@ -449,7 +451,7 @@ private:
 				</section>
 				<section data-transition="fade-in slide-out">
 					<h3>Conversion</h3>
-					<p><code>Rep</code> must be unsigned or known non-negative</p>
+					<p style="font-size: 85%"><code>Rep</code> must be unsigned or known non-negative</p>
 					<div style="display: flex; font-size: 80%; opacity: .1">
 						<div style="flex: 50%">
 							<pre><code class="c++">fixed_point&lt;int, -16> from_int(int n)
@@ -499,7 +501,7 @@ private:
 
 				<section data-transition="slide-in fade-out">
 					<h3>The Operators</h3>
-					<p>Arithmetic operators are pass-throughs<a href="https://godbolt.org/z/lSvmsl">.</a></p>
+					<p style="font-size: 85%">Arithmetic operators are pass-throughs<a href="https://godbolt.org/z/lSvmsl">.</a></p>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 50%">
 							<pre><code class="c++">auto add(int l,
@@ -548,7 +550,7 @@ private:
 				</section>
 				<section data-transition="fade">
 					<h3>The Operators</h3>
-					<p>Arithmetic overloads are pass-throughs<a href="https://godbolt.org/z/MamRWT">.</a></p>
+					<p style="font-size: 85%">Arithmetic overloads are pass-throughs<a href="https://godbolt.org/z/MamRWT">.</a></p>
 					<div style="display: flex; font-size: 80%">
 						<div style="flex: 50%">
 							<pre><code class="c++">auto add(fixed_point&lt;int, -8> l,
@@ -597,7 +599,7 @@ private:
 				</section>
 				<section data-transition="fade">
 					<h3>The Operators</h3>
-					<p>Multiplication is lossless but susceptible to overflow<a href="https://godbolt.org/z/MamRWT">.</a></p>
+					<p style="font-size: 85%">Multiplication is lossless but susceptible to overflow<a href="https://godbolt.org/z/MamRWT">.</a></p>
 					<div style="display: flex; font-size: 80%; opacity: .4">
 						<div style="flex: 50%">
 							<pre><code class="c++">auto add(fixed_point&lt;int, -8> l,
@@ -646,7 +648,7 @@ private:
 				</section>
 				<section data-transition="fade-in slide-out">
 					<h3>The Operators</h3>
-					<p>Division is surprising<a href="https://godbolt.org/z/MamRWT">.</a></p>
+					<p style="font-size: 85%">Division is surprising<a href="https://godbolt.org/z/MamRWT">.</a></p>
 					<div style="display: flex; font-size: 80%; opacity: .4">
 						<div style="flex: 50%">
 							<pre><code class="c++">auto add(fixed_point&lt;int, -8> l,
@@ -831,7 +833,7 @@ using elastic_fixed_point =
 					<p>vs</p>
 					<h3>'Quasi-Exact' Division</h3>
 					<p>Subject of P1368R0</p>
-					<ul>
+					<ul style="font-size: 85%">
 						<li>Quasi-exact division pre-widens dividend</li>
 						<li>Avoids imprecise results where possible</li>
 						<li>Typically <i>feels</i> like floating-point division</li>
@@ -888,7 +890,7 @@ auto r = n % d;  // currency<-2>(.02)
 				
 				<section>
 					<h3>As an alternative to <code>float</code></h3>
-					<ul style="font-size: 95%">
+					<ul style="font-size: 80%">
 						<li>Floating-point uses as much as 10× silicon and energy</li>
 						<li>Fixed-point is sometimes faster, sometimes slower</li>
 						<li>Applications include finance, CNNs, FPGAs, DSPs</li>
@@ -943,7 +945,7 @@ using duration = scaled_integer&lt;Rep, Period>;</code></pre></div>
 				</section>
 				<section>
 					<h3>Background</h3>
-					<ul style="font-size: 75%">
+					<ul style="font-size: 70%">
 						<li>Two competing fixed-point papers presented in Jacksonville 2016:</li>
 						<ul>
 							<li>P0106R0 proposed few types that each bundled many features</li>
@@ -964,7 +966,7 @@ using duration = scaled_integer&lt;Rep, Period>;</code></pre></div>
 				</section>
 				<section>
 					<h3>Motivation</h3>
-					<ul>
+					<ul style="font-size: 85%">
 						<li>Subject is fixed-size numeric types</li>
 						<li>A well-established list of concerns exists</li>
 						<li>They typically enhance integers in some way</li>
@@ -1111,8 +1113,8 @@ using static_number =
 			</div>
 		</div>
 
-		<script src="lib/js/head.min.js"></script>
-		<script src="js/reveal.js"></script>
+		<script src="../lib/js/head.min.js"></script>
+		<script src="../js/reveal.js"></script>
 
 		<script>
 			// More info about config & dependencies:
@@ -1120,10 +1122,10 @@ using static_number =
 			// - https://github.com/hakimel/reveal.js#dependencies
 			Reveal.initialize({
 				dependencies: [
-					{ src: 'plugin/markdown/marked.js' },
-					{ src: 'plugin/markdown/markdown.js' },
-					{ src: 'plugin/notes/notes.js', async: true },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+					{ src: '../plugin/markdown/marked.js' },
+					{ src: '../plugin/markdown/markdown.js' },
+					{ src: '../plugin/notes/notes.js', async: true },
+					{ src: '../plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
 				]
 			});
 		</script>
