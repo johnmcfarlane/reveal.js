@@ -23,308 +23,308 @@
 	</head>
 	<body>
 		<div class="reveal">
-			<div class="slides">
-                <!--<section>-->
-                    <!--<h1>Fixed-point Arithmetic</h1>-->
-                    <!--<h3>John McFarlane</h3>-->
-                    <!--<h4>2018-03-15, emBO++</h4>-->
-                <!--</section>-->
+            <div class="slides">
+                <section>
+                    <h1>Fixed-point Arithmetic</h1>
+                    <h3>John McFarlane</h3>
+                    <h4>2018-03-15, emBO++</h4>
+                </section>
 
-                <!--<section>-->
-<!--<h2>John McFarlane (me)</h2>-->
-                    <!--<p>Software Engineer, Jaguar Land Rover, Shannon, Ireland</p>-->
-                    <!--<p>ISO C++ Study Group 14</p>-->
-                <!--</section>-->
+                <section>
+                    <h2>John McFarlane (me)</h2>
+                    <p>Software Engineer, Jaguar Land Rover, Shannon, Ireland</p>
+                    <p>ISO C++ Study Group 14</p>
+                </section>
 
-                <!--<section>-->
-<!--<h2>Background</h2>-->
-                    <!--<p>BBC BASIC, 6502, C, 80286/7, C++, Python</p>-->
-                    <!--<p>Games, Fractals, AI, Simulation, APIs, Numerics, CI</p>-->
-                <!--</section>-->
+                <section>
+                    <h2>Background</h2>
+                    <p>BBC BASIC, 6502, C, 80286/7, C++, Python</p>
+                    <p>Games, Fractals, AI, Simulation, APIs, Numerics, CI</p>
+                </section>
 
-                <!--<section>-->
-<!--<h3>Contents</h3>-->
-                    <!--<ol>-->
-                        <!--<li class="fragment">Bit Parts</li>-->
-                        <!--<li class="fragment">Typology</li>-->
-                        <!--<li class="fragment">Sharp Edges</li>-->
-                    <!--</ol>-->
-                <!--</section>-->
+                <section>
+                    <h3>Contents</h3>
+                    <ol>
+                        <li class="fragment">Bit Parts</li>
+                        <li class="fragment">Typology</li>
+                        <li class="fragment">Sharp Edges</li>
+                    </ol>
+                </section>
 
-                <!--<section data-transition="slide-in fade-out">-->
-                    <!--<h2>1. Bit Parts</h2>-->
-                    <!--<div><code>…0.0…</code></div>-->
-                    <!--<div><code>^</code></div>-->
-                <!--</section>-->
+                <section>
+                    <h2>1. Bit Parts</h2>
+                    <div><code>…0.0…</code></div>
+                    <div><code>^</code></div>
+                </section>
 
-                <!--<section>-->
-<!--<h3>1.0. Acting Natural</h3>-->
-                    <!--<div><code></code>-->
-                        <!--<span class="fragment">Question: </span>-->
-                        <!--<span class="fragment">how many <i>digits</i> in <code>uint8_t</code>?</span>-->
-                    <!--</div>-->
-                    <!--<div style="opacity:0"><code></code>-->
-                        <!--<span>Answer: </span>-->
-                    <!--</div>-->
-                <!--</section>-->
+                <section>
+                    <h3>1.0. Acting Natural</h3>
+                    <div><code></code>
+                        <span class="fragment">Question: </span>
+                        <span class="fragment">how many <i>digits</i> in <code>uint8_t</code>?</span>
+                    </div>
+                    <div style="opacity:0"><code></code>
+                        <span>Answer: </span>
+                    </div>
+                </section>
 
-                <!--<section>-->
-<!--<div><code>-->
-                        <!--<span style="opacity:0">…000000000</span><span>00101010</span>-->
-                        <!--<span class="fragment"> = </span>-->
-                        <!--<span class="fragment">32 + 8 + 2</span>-->
-                    <!--</code></div>-->
-                <!--</section>-->
+                <section data-transition="slide-in none-out">
+                    <div><code>
+                        <span style="opacity:0">…000000000</span><span>00101010</span>
+                        <span class="fragment"> = </span>
+                        <span class="fragment">32 + 8 + 2</span>
+                    </code></div>
+                </section>
 
-                <!--<section>-->
-<!--<div><code>-->
-                        <!--<span style="opacity:0">…000000000</span><span>00101010</span>-->
-                        <!--<span> = </span>-->
-                        <!--<span>42</span>-->
-                        <!--<span style="opacity:0">000000…</span>-->
-                    <!--</code></div>-->
-                <!--</section>-->
+                <section data-transition="none">
+                    <div><code>
+                        <span style="opacity:0">…000000000</span><span>00101010</span>
+                        <span> = </span>
+                        <span>42</span>
+                        <span style="opacity:0">000000…</span>
+                    </code></div>
+                </section>
 
-                <!--<section>-->
-<!--<div><code>-->
-                        <!--<span style="opacity:0">…000000000000</span><span>00101010</span><span style="opacity:0">.00000000000000…</span>-->
-                    <!--</code></div>-->
-                <!--</section>-->
-                <!--<section data-transition="none">-->
-                    <!--<div><code>-->
-                        <!--<span style="opacity:.25">…000000000000</span><span>00101010</span><span style="opacity:.25" class="fragment">.00000000000000…</span>-->
-                    <!--</code></div>-->
-                <!--</section>-->
+                <section data-transition="none">
+                    <div><code>
+                        <span style="opacity:0">…000000000000</span><span>00101010</span><span style="opacity:0">.00000000000000…</span>
+                    </code></div>
+                </section>
+                <section data-transition="none">
+                    <div><code>
+                        <span style="opacity:.25">…000000000000</span><span>00101010</span><span style="opacity:.25" class="fragment">.00000000000000…</span>
+                    </code></div>
+                </section>
 
-                <!--<section>-->
-<!--<h3>1.0. Act Natural</h3>-->
-                    <!--<div><code></code>-->
-                        <!--<span>Question: </span>-->
-                        <!--<span>how many <i>digits</i> in <code>uint8_t</code>?</span>-->
-                    <!--</div>-->
-                    <!--<div><code></code>-->
-                        <!--<span>Answer: </span>-->
-                        <!--<span class="fragment">∞</span><span class="fragment">+8</span><span class="fragment">+∞</span><span class="fragment"> = 2∞+8</span>-->
-                    <!--</div>-->
-                <!--</section>-->
+                <section>
+                    <h3>1.0. Act Natural</h3>
+                    <div><code></code>
+                        <span>Question: </span>
+                        <span>how many <i>digits</i> in <code>uint8_t</code>?</span>
+                    </div>
+                    <div><code></code>
+                        <span>Answer: </span>
+                        <span class="fragment">∞</span><span class="fragment">+8</span><span class="fragment">+∞</span><span class="fragment"> = 2∞+8</span>
+                    </div>
+                </section>
 
-                <!--<section>-->
-<!--<h3>1.1. Be Positive</h3>-->
-                    <!--<div><code></code>-->
-                        <!--<span class="fragment">Question: </span>-->
-                        <!--<span class="fragment">how many <i>sign bits</i> in <code>int8_t</code>?</span>-->
-                    <!--</div>-->
-                    <!--<div style="opacity:0"><code></code>-->
-                        <!--<span>Answer: </span>-->
-                        <!--<span>∞</span><span>+1</span>-->
-                    <!--</div>-->
-                <!--</section>-->
+                <section>
+                    <h3>1.1. Be Positive</h3>
+                    <div><code></code>
+                        <span class="fragment">Question: </span>
+                        <span class="fragment">how many <i>sign bits</i> in <code>int8_t</code>?</span>
+                    </div>
+                    <div style="opacity:0"><code></code>
+                        <span>Answer: </span>
+                        <span>∞</span><span>+1</span>
+                    </div>
+                </section>
 
-                <!--<section>-->
-<!--<div><code>-->
-                        <!--<span style="opacity:0">…11111111111</span><span>11010110</span>-->
-                        <!--<span class="fragment"> = </span>-->
-                        <!--<span class="fragment">-128+64+16+4+2</span>-->
-                    <!--</code></div>-->
-                <!--</section>-->
+                <section data-transition="slide-in fade-out">
+                    <div><code>
+                        <span style="opacity:0">…11111111111</span><span>11010110</span>
+                        <span class="fragment"> = </span>
+                        <span class="fragment">-128+64+16+4+2</span>
+                    </code></div>
+                </section>
 
-                <!--<section>-->
-<!--<div><code>-->
-                        <!--<span style="opacity:0">…11111111111</span><span>11010110</span><span style="opacity:0">.000000000000000…</span>-->
-                    <!--</code></div>-->
-                <!--</section>-->
+                <section data-transition="fade">
+                    <div><code>
+                        <span style="opacity:0">…11111111111</span><span>11010110</span><span style="opacity:0">.000000000000000…</span>
+                    </code></div>
+                </section>
 
-                <!--<section>-->
-<!--<div><code>-->
-                        <!--<span>…11111111111</span><span style="opacity:.25">11010110.</span><span style="opacity:0">000000000000000…</span>-->
-                    <!--</code></div>-->
-                <!--</section>-->
+                <section data-transition="fade">
+                    <div><code>
+                        <span>…11111111111</span><span style="opacity:.25">11010110.</span><span style="opacity:0">000000000000000…</span>
+                    </code></div>
+                </section>
 
-                <!--<section>-->
-<!--<div><code>-->
-                        <!--<span style="opacity:.25">…11111111111</span><span style="opacity:.25">11010110.</span><span style="opacity:1">000000000000000…</span>-->
-                    <!--</code></div>-->
-                <!--</section>-->
+                <section data-transition="fade-in slide-out">
+                    <div><code>
+                        <span style="opacity:.25">…11111111111</span><span style="opacity:.25">11010110.</span><span style="opacity:1">000000000000000…</span>
+                    </code></div>
+                </section>
 
-                <!--<section>-->
-<!--<h3>1.1. Be Positive</h3>-->
-                    <!--<div><code></code>-->
-                        <!--<span>Question: </span>-->
-                        <!--<span>how many <i>sign bits</i> in <code>int8_t</code>?</span>-->
-                    <!--</div>-->
-                    <!--<div><code></code>-->
-                        <!--<span>Answer: </span>-->
-                        <!--<span class="fragment">∞</span><span class="fragment">+1</span>-->
-                    <!--</div>-->
-                <!--</section>-->
+                <section>
+                    <h3>1.1. Be Positive</h3>
+                    <div><code></code>
+                        <span>Question: </span>
+                        <span>how many <i>sign bits</i> in <code>int8_t</code>?</span>
+                    </div>
+                    <div><code></code>
+                        <span>Answer: </span>
+                        <span class="fragment">∞</span><span class="fragment">+1</span>
+                    </div>
+                </section>
 
-                <!--<section>-->
-<!--<h3>1.2. Get Real</h3>-->
-                    <!--<div>-->
-                        <!--<span class="fragment">Question: </span>-->
-                        <!--<span class="fragment">how many <i>significant digits</i> in <code>π</code>?</span>-->
-                    <!--</div>-->
-                    <!--<div style="opacity:0">-->
-                        <!--<span>Answer: </span><span>∞</span><span>+1</span><span>+2</span><span>+∞</span><span>=2∞+3</span>-->
-                    <!--</div>-->
-                <!--</section>-->
+                <section>
+                    <h3>1.2. Get Real</h3>
+                    <div>
+                        <span class="fragment">Question: </span>
+                        <span class="fragment">how many <i>significant digits</i> in <code>π</code>?</span>
+                    </div>
+                    <div style="opacity:0">
+                        <span>Answer: </span><span>∞</span><span>+1</span><span>+2</span><span>+∞</span><span>=2∞+3</span>
+                    </div>
+                </section>
 
-                <!--<section>-->
-<!--<div><code>-->
-                        <!--<span style="opacity:0">…00000</span><span>11.001001000011111101101010100…</span>-->
-                    <!--</code></div>-->
-                <!--</section>-->
+                <section data-transition="slide-in fade-out">
+                    <div><code>
+                        <span style="opacity:0">…00000</span><span>11.001001000011111101101010100…</span>
+                    </code></div>
+                </section>
 
-                <!--<section>-->
-<!--<div><code>-->
-                        <!--<span style="opacity:0">…0000</span><span style="opacity:.25">0</span><span>11.001001000011111101101010100…</span>-->
-                    <!--</code></div>-->
-                <!--</section>-->
+                <section data-transition="fade">
+                    <div><code>
+                        <span style="opacity:0">…00000</span><span style="opacity:.25">1</span><span>1.001001000011111101101010100…</span>
+                    </code></div>
+                </section>
 
-                <!--<section>-->
-<!--<div><code>-->
-                        <!--<span style="opacity:.25">…00000</span><span>11.001001000011111101101010100…</span>-->
-                    <!--</code></div>-->
-                <!--</section>-->
+                <section data-transition="fade-in slide-out">
+                    <div><code>
+                        <span style="opacity:.25">…000001</span><span>1.001001000011111101101010100…</span>
+                    </code></div>
+                </section>
 
-                <!--<section>-->
-<!--<h3>1.2. Get Real</h3>-->
-                    <!--<div>-->
-                        <!--<span>Question: </span>-->
-                        <!--<span>how many <i>significant digits</i> in <code>π</code>?</span>-->
-                    <!--</div>-->
-                    <!--<div>-->
-                        <!--<span>Answer: </span>-->
-                        <!--<span class="fragment">∞</span>-->
-                        <!--<span class="fragment">+1</span>-->
-                        <!--<span class="fragment">+2</span>-->
-                        <!--<span class="fragment">+∞</span>-->
-                        <!--<span class="fragment">=2∞+3</span>-->
-                    <!--</div>-->
-                <!--</section>-->
+                <section>
+                    <h3>1.2. Get Real</h3>
+                    <div>
+                        <span>Question: </span>
+                        <span>how many <i>significant digits</i> in <code>π</code>?</span>
+                    </div>
+                    <div>
+                        <span>Answer: </span>
+                        <span class="fragment">∞</span>
+                        <span class="fragment">+24</span>
+                        <span class="fragment">-1</span>
+                        <span class="fragment">+∞</span>
+                        <span class="fragment">=2∞+23</span>
+                    </div>
+                </section>
 
-                <!--<section>-->
-<!--<h3>1.3. Floatation Devices</h3>-->
-                    <!--<div>-->
-                        <!--<span class="fragment">Question: </span>-->
-                        <!--<span class="fragment">how many <i>digits</i> in <code>float</code>?</span>-->
-                    <!--</div>-->
-                    <!--<div style="opacity:0">-->
-                        <!--<span>Answer: </span><span>∞</span><span>+1</span><span>+∞</span><span>=2∞+1</span><span>(avg.)</span>-->
-                    <!--</div>-->
-                <!--</section>-->
+                <section>
+                    <h3>1.3. Floatation Devices</h3>
+                    <div>
+                        <span class="fragment">Question: </span>
+                        <span class="fragment">how many <i>digits</i> in <code>float</code>?</span>
+                    </div>
+                    <div style="opacity:0">
+                        <span>Answer: </span><span>∞</span><span>+1</span><span>+∞</span><span>=2∞+1</span><span>(avg.)</span>
+                    </div>
+                </section>
 
-                <!--<section>-->
-<!--<div><code>-->
-                        <!--<span style="opacity:0">…00000</span><span>11.001001000011111101101010100…</span>-->
-                    <!--</code></div>-->
-                <!--</section>-->
-                <!--<section data-transition="none">-->
-                    <!--<div><code>-->
-                        <!--<span style="opacity:.25">…00000</span><span style="opacity:.25"></span><span>11.0010010000111111011010</span><span style="opacity:.25">10100…</span>-->
-                    <!--</code></div>-->
-                <!--</section>-->
-                <!--<section data-transition="none">-->
-                    <!--<div><code>-->
-                        <!--<span style="opacity:.25">…000001</span><span style="opacity:.25"></span><span>1.0010010000111111011010</span><span style="opacity:.25">10100…</span>-->
-                    <!--</code></div>-->
-                <!--</section>-->
+                <section>
+                    <div><code>
+                        <span style="opacity:0">…00000</span><span>11.001001000011111101101010100…</span>
+                    </code></div>
+                </section>
+                <section data-transition="none">
+                    <div><code>
+                        <span style="opacity:.25">…00000</span><span style="opacity:.25"></span><span>11.0010010000111111011010</span><span style="opacity:.25">10100…</span>
+                    </code></div>
+                </section>
+                <section data-transition="none">
+                    <div><code>
+                        <span style="opacity:.25">…000001</span><span style="opacity:.25"></span><span>1.0010010000111111011010</span><span style="opacity:.25">10100…</span>
+                    </code></div>
+                </section>
 
-                <!--<section>-->
-<!--<h3>1.3. Floatation Devices</h3>-->
-                    <!--<div>-->
-                        <!--<span>Question: </span>-->
-                        <!--<span>how many <i>digits</i> in <code>float</code>?</span>-->
-                    <!--</div>-->
-                    <!--<div>-->
-                        <!--<span>Answer: </span>-->
-                        <!--<span class="fragment">∞</span>-->
-                        <!--<span class="fragment">+24</span>-->
-                        <!--<span class="fragment">-1</span>-->
-                        <!--<span class="fragment">+∞</span>-->
-                        <!--<span class="fragment">=2∞+23</span>-->
-                    <!--</div>-->
-                <!--</section>-->
+                <section>
+                    <h3>1.3. Floatation Devices</h3>
+                    <div>
+                        <span>Question: </span>
+                        <span>how many <i>digits</i> in <code>float</code>?</span>
+                    </div>
+                    <div>
+                        <span>Answer: </span>
+                        <span class="fragment">∞</span>
+                        <span class="fragment">+24</span>
+                        <span class="fragment">-1</span>
+                        <span class="fragment">+∞</span>
+                        <span class="fragment">=2∞+23</span>
+                    </div>
+                </section>
 
-                <!--<section>-->
-<!--<h3>1.4. Frame the Problem</h3>-->
-                    <!--<div>-->
-                        <!--<span class="fragment">Question: </span>-->
-                        <!--<span class="fragment">how do you fit 42 in a <code>int8_t</code>?</span>-->
-                    <!--</div>-->
-                    <!--<div style="opacity:0"><code></code>-->
-                        <!--<span>Answer:</span>-->
-                        <!--<span>with room to grow.</span>-->
-                    <!--</div>-->
-                <!--</section>-->
+                <section>
+                    <h3>1.4. Frame the Problem</h3>
+                    <div>
+                        <span class="fragment">Question: </span>
+                        <span class="fragment">how do you fit 42 in a <code>int8_t</code>?</span>
+                    </div>
+                    <div style="opacity:0"><code></code>
+                        <span>Answer:</span>
+                        <span>with room to grow.</span>
+                    </div>
+                </section>
 
-                <!--<section>-->
-<!--<div><code>-->
-                        <!--<span>…00000000000101010.000000…</span>-->
-                    <!--</code><span style="opacity: 0"><span style="font-size: 200%; display: contents">✓</span></span></div>-->
-                    <!--<div style="opacity: 0"><code>-->
-                        <!--<span style="opacity:.25">…0000000000</span><span>0101010</span>.<span style="opacity:1">0</span><span style="opacity:.25">00000…</span>-->
-                    <!--</code><span style="opacity: 0"><span style="font-size: 200%; display: contents">✓</span></span></div>-->
-                    <!--<div style="opacity: 0"><code>-->
-                        <!--<span style="opacity:.25">…00000000</span><span>00010101</span><span style="opacity:.25">0.000000…</span>-->
-                    <!--</code><span style="font-size: 200%; display: contents; color: green">✓</span></div>-->
+                <section>
+                    <div><code>
+                        <span>…00000000000101010.000000…</span>
+                    </code><span style="opacity: 0"><span style="font-size: 200%; display: contents">✓</span></span></div>
+                    <div style="opacity: 0"><code>
+                        <span style="opacity:.25">…0000000000</span><span>0101010</span>.<span style="opacity:1">0</span><span style="opacity:.25">00000…</span>
+                    </code><span style="opacity: 0"><span style="font-size: 200%; display: contents">✓</span></span></div>
+                    <div style="opacity: 0"><code>
+                        <span style="opacity:.25">…00000000</span><span>00010101</span><span style="opacity:.25">0.000000…</span>
+                    </code><span style="font-size: 200%; display: contents; color: green">✓</span></div>
 
-                    <!--<aside class="notes">-->
-                        <!--Here's a slice of 42.-->
-                    <!--</aside>-->
-                <!--</section>-->
+                    <aside class="notes">
+                        Here's a slice of 42.
+                    </aside>
+                </section>
 
-                <!--<section>-->
-<!--<div><code>-->
-                        <!--<span style="opacity:.25">…0000000000</span><span>010101</span><span style="opacity:.25">0.000000…</span>-->
-                    <!--</code><span style="opacity: 0"><span style="font-size: 200%; display: contents">✓</span></span></div>-->
-                    <!--<div style="opacity: 0"><code>-->
-                        <!--<span style="opacity:.25">…0000000000</span><span>0101010</span>.<span style="opacity:1">0</span><span style="opacity:.25">00000…</span>-->
-                    <!--</code><span style="opacity: 0"><span style="font-size: 200%; display: contents">✓</span></span></div>-->
-                    <!--<div style="opacity: 0"><code>-->
-                        <!--<span style="opacity:.25">…00000000</span><span>00010101</span><span style="opacity:.25">0.000000…</span>-->
-                    <!--</code><span style="font-size: 200%; display: contents; color: green">✓</span></div>-->
+                <section>
+                    <div><code>
+                        <span style="opacity:.25">…0000000000</span><span>010101</span><span style="opacity:.25">0.000000…</span>
+                    </code><span style="opacity: 0"><span style="font-size: 200%; display: contents">✓</span></span></div>
+                    <div style="opacity: 0"><code>
+                        <span style="opacity:.25">…0000000000</span><span>0101010</span>.<span style="opacity:1">0</span><span style="opacity:.25">00000…</span>
+                    </code><span style="opacity: 0"><span style="font-size: 200%; display: contents">✓</span></span></div>
+                    <div style="opacity: 0"><code>
+                        <span style="opacity:.25">…00000000</span><span>00010101</span><span style="opacity:.25">0.000000…</span>
+                    </code><span style="font-size: 200%; display: contents; color: green">✓</span></div>
 
-                    <!--<aside class="notes">-->
-                        <!--Here's the minimum slice that is needed store 42.-->
-                        <!--Note the leftmost zero needed to distinguish it from a negative value.-->
-                    <!--</aside>-->
-                <!--</section>-->
+                    <aside class="notes">
+                        Here's the minimum slice that is needed store 42.
+                        Note the leftmost zero needed to distinguish it from a negative value.
+                    </aside>
+                </section>
 
-                <!--<section>-->
-<!--<div><code>-->
-                        <!--<span style="opacity:.25">…000000000</span><span>00101010</span><span style="opacity:.25">.000000…</span>-->
-                    <!--</code><span style="opacity: 0"><span style="font-size: 200%; display: contents">✓</span></span></div>-->
-                    <!--<div class="fragment"><code>-->
-                        <!--<span style="opacity:.25">…0000000000</span><span>0101010</span>.<span style="opacity:1">0</span><span style="opacity:.25">00000…</span>-->
-                    <!--</code><span style="opacity: 0"><span style="font-size: 200%; display: contents">✓</span></span></div>-->
-                    <!--<div class="fragment"><code>-->
-                        <!--<span style="opacity:.25">…00000000</span><span>00010101</span><span style="opacity:.25">0.000000…</span>-->
-                    <!--</code><span class="fragment" style="font-size: 200%; display: contents; color: green">✓</span></div>-->
+                <section>
+                    <div><code>
+                        <span style="opacity:.25">…000000000</span><span>00101010</span><span style="opacity:.25">.000000…</span>
+                    </code><span style="opacity: 0"><span style="font-size: 200%; display: contents">✓</span></span></div>
+                    <div class="fragment"><code>
+                        <span style="opacity:.25">…0000000000</span><span>0101010</span>.<span style="opacity:1">0</span><span style="opacity:.25">00000…</span>
+                    </code><span style="opacity: 0"><span style="font-size: 200%; display: contents">✓</span></span></div>
+                    <div class="fragment"><code>
+                        <span style="opacity:.25">…00000000</span><span>00010101</span><span style="opacity:.25">0.000000…</span>
+                    </code><span class="fragment" style="font-size: 200%; display: contents; color: green">✓</span></div>
 
-                    <!--<aside class="notes">-->
-                        <!--Here's the slice that <code>int8_t</code> uses to store 42.-->
-                        <!--The minimum slice is a subset of this one.-->
-                        <!--Therefore, an <code>int8_t</code> can store 42.-->
-                    <!--</aside>-->
-                <!--</section>-->
+                    <aside class="notes">
+                        Here's the slice that <code>int8_t</code> uses to store 42.
+                        The minimum slice is a subset of this one.
+                        Therefore, an <code>int8_t</code> can store 42.
+                    </aside>
+                </section>
 
-                <!--<section>-->
-<!--<h3>1.4. Frame the Problem</h3>-->
-                    <!--<div>-->
-                        <!--<span>Question: </span>-->
-                        <!--<span>how do you fit 42 in a <code>int8_t</code>?</span>-->
-                    <!--</div>-->
-                    <!--<div style="opacity:1"><code></code>-->
-                        <!--<span>Answer:</span>-->
-                        <!--<span class="fragment">with room to grow.</span>-->
-                    <!--</div>-->
-                <!--</section>-->
+                <section>
+                    <h3>1.4. Frame the Problem</h3>
+                    <div>
+                        <span>Question: </span>
+                        <span>how do you fit 42 in a <code>int8_t</code>?</span>
+                    </div>
+                    <div style="opacity:1"><code></code>
+                        <span>Answer:</span>
+                        <span class="fragment">with room to grow.</span>
+                    </div>
+                </section>
 
                 <section>
                     <h3>1.9.9 Warning</h3>
-                    <img width="192" height="192" data-src="fall-44484_960_720.png" alt="pixabay.com/en/fall-surface-warning-slippery-44484/" style="border: none; background-color: #00000000">
-					<h4>Slide Code Ahead!</h4>
+                    <img width="192" height="192" data-src="fall-44484_960_720.png" alt="pixabay.com/en/fall-surface-warning-slippery-44484/" style="border: none; box-shadow:none; background-color: #00000000">
+                    <h4>Slide Code Ahead!</h4>
                     <pre><code class="sh">git clone https://github.com/johnmcfarlane/cnl.git
 c++ -std=c++17 -O3 -Wall -Wextra -Werror slide_code.cpp</code></pre>
                     <pre><code class="c++">#include &lt;cnl/all.h>
@@ -342,191 +342,322 @@ using namespace std;</code></pre>
                     <h2>2. Typology</h2>
                     <div><code>&lt;O,0></code></div>
                     <div><code>-</code></div>
-				</section>
+                </section>
 
-				<section>
-					<h3>2.0. Don't Sell Yourself Short</h3>
-					<div><code></code>
-						<span class="fragment">Question: </span>
-						<span class="fragment">how do you <em>pronounce</em> 'forty-two'?</span>
-					</div>
-				</section>
+                <section>
+                    <h3>2.0. Don't Sell Yourself Short</h3>
+                    <div><code></code>
+                        <span class="fragment">Question: </span>
+                        <span class="fragment">how do you <em>pronounce</em> 'forty-two'?</span>
+                    </div>
+                </section>
 
-				<section>
-					<h3>CNL: Compositional Numeric Library</h3>
-					<p class="fragment"><a href="https://github.com/johnmcfarlane/cnl/">
-						github.com/johnmcfarlane/cnl
-					</a></p>
-					<pre class="fragment"><code class="c++">template&lt;typename Rep=int, int Exponent=0, int Radix=2>
+                <section>
+                    <h3>CNL: Compositional Numeric Library</h3>
+                    <p class="fragment"><a href="https://github.com/johnmcfarlane/cnl/">
+                        github.com/johnmcfarlane/cnl
+                    </a></p>
+                    <pre class="fragment"><code class="c++">template&lt;typename Rep=int, int Exponent=0, int Radix=2>
 class fixed_point;</code></pre>
-					<pre class="fragment"><code class="c++">template&lt;typename Rep, int Exponent, int Radix>
+                    <pre class="fragment"><code class="c++">template&lt;typename Rep, int Exponent, int Radix>
 class fixed_point {
 private:
   Rep n;
 };</code></pre>
-					<p class="fragment"><i>value</i> = <i>n</i>×<i>Radix</i><sup><i>Exponent</i></sup></p>
-				</section>
+                    <p class="fragment"><i>value</i> = <i>n</i>×<i>Radix</i><sup><i>Exponent</i></sup></p>
+                </section>
 
-				<section>
-					<div>
-						<code><span style="opacity:.25">…00000000</span><span>00010101</span><span
-							style="opacity:.25">0.000000…
+                <section>
+                    <div>
+                        <code><span style="opacity:.25">…00000000</span><span>00010101</span><span
+                                style="opacity:.25">0.000000…
 						</span></code>
-						<span class="fragment" style="font-size: 150%; display: contents; color: green">✓</span>
-					</div>
+                        <span style="font-size: 150%; display: contents; color: #00000000">✓</span>
+                    </div>
 
-					<div style="display: flex">
-						<pre style="flex: 85%"><code class="fragment" class="c++">int8_t{42}</code></pre>
-						<div style="flex: 05%"><span class="fragment" style="font-size: 150%">✗</span></div>
-					</div>
+                    <div class="fragment" style="display: flex; box-shadow:none">
+                        <pre style="flex: 85%"><code class="c++">int8_t{42}</code></pre>
+                        <div style="flex: 05%"><span class="fragment" style="font-size: 150%; color: red">✗</span></div>
+                    </div>
 
-					<div style="display: flex">
-						<pre style="flex: 85%"><code class="fragment" class="c++">fixed_point&lt;int8_t, 1>{42}</code></pre>
-						<div style="flex: 05%"><span class="fragment" style="font-size: 150%">?</span></div>
-					</div>
+                    <div class="fragment" style="display: flex">
+                        <pre style="flex: 85%"><code class="c++">fixed_point&lt;int8_t, 1>{42}</code></pre>
+                        <div style="flex: 05%"><span class="fragment" style="font-size: 150%">?</span></div>
+                    </div>
 
-					<div style="display: flex; opacity: 0">
-						<pre style="flex: 85%"><code class="c++">fixed_point&lt;int, 1>{42}</code></pre>
-						<div style="flex: 05%"><span style="font-size: 150%; color: green">✓</span></div>
-					</div>
-				</section>
+                    <div style="display: flex; opacity: 0">
+                        <pre style="flex: 85%"><code class="c++">fixed_point&lt;int, 1>{42}</code></pre>
+                        <div style="flex: 05%"><span style="font-size: 150%; color: green">✓</span></div>
+                    </div>
+                </section>
 
-				<!--<section data-transition="slide-in fade-out">-->
-					<!--<div style="display: flex">-->
-						<!--<div style="flex: 61%"><pre><code class="c++">fixed_point&lt;int8_t, 1> a(float value)-->
-<!--{-->
-    <!--return value;-->
-<!--}</code></pre></div>-->
-						<!--<div style="flex: 39%"><pre><code class="arm" data-trim contenteditable>a(float):-->
-  <!--push  {r4, lr}-->
-  <!--mov   r1, #1056964608-->
-  <!--bl    __aeabi_fmul-->
-  <!--bl    __aeabi_f2iz-->
-  <!--pop   {r4, pc}</code></pre></div>-->
-					<!--</div>-->
+                <section data-transition="slide-in fade-out">
+                    <div style="display: flex">
+                        <div style="flex: 61%"><pre><code class="c++">fixed_point&lt;int8_t, 1> a(float value)
+{
+    return value;
+}</code></pre></div>
+                        <div style="flex: 39%"><pre><code class="arm" data-trim contenteditable>a(float):
+  push  {r4, lr}
+  mov   r1, #1056964608
+  bl    __aeabi_fmul
+  bl    __aeabi_f2iz
+  pop   {r4, pc}</code></pre></div>
+                    </div>
 
-					<!--<div class="fragment" style="display: flex">-->
-						<!--<div style="flex: 61%"><pre><code class="c++">int8_t b(float value)-->
-<!--{-->
-    <!--return value * .5f;-->
-<!--}</code></pre></div>-->
-						<!--<div style="flex: 39%"><pre><code class="arm" data-trim contenteditable>b(float):-->
-  <!--push  {r4, lr}-->
-  <!--mov   r1, #1056964608-->
-  <!--bl    __aeabi_fmul-->
-  <!--bl    __aeabi_f2iz-->
-  <!--lsl   r0, r0, #24-->
-  <!--asr   r0, r0, #24-->
-  <!--pop   {r4, pc}</code></pre></div>-->
-					<!--</div>-->
+                    <div class="fragment" style="display: flex">
+                        <div style="flex: 61%"><pre><code class="c++">int8_t b(float value)
+{
+    return value * .5f;
+}</code></pre></div>
+                        <div style="flex: 39%"><pre><code class="arm" data-trim contenteditable>b(float):
+  push  {r4, lr}
+  mov   r1, #1056964608
+  bl    __aeabi_fmul
+  bl    __aeabi_f2iz
+  lsl   r0, r0, #24
+  asr   r0, r0, #24
+  pop   {r4, pc}</code></pre></div>
+                    </div>
 
-					<!--<a class="fragment" href="https://godbolt.org/z/dEbCJ2">godbolt.org/z/dEbCJ2</a>-->
-				<!--</section>-->
+                    <a class="fragment" href="https://godbolt.org/z/dEbCJ2">godbolt.org/z/dEbCJ2</a>
+                </section>
 
-				<!--<section data-transition="fade-in slide-out">-->
-					<!--<div style="display: flex">-->
-						<!--<div style="flex: 61%"><pre><code class="c++">fixed_point&lt;int   , 1> a(float value)-->
-<!--{-->
-    <!--return value;-->
-<!--}</code></pre></div>-->
-						<!--<div style="flex: 39%"><pre><code class="arm" data-trim contenteditable>a(float):-->
-  <!--push  {r4, lr}-->
-  <!--mov   r1, #1056964608-->
-  <!--bl    __aeabi_fmul-->
-  <!--bl    __aeabi_f2iz-->
-  <!--pop   {r4, pc}</code></pre></div>-->
-					<!--</div>-->
+                <section data-transition="fade-in slide-out">
+                    <div style="display: flex">
+                        <div style="flex: 61%"><pre><code class="c++">fixed_point&lt;int   , 1> a(float value)
+{
+    return value;
+}</code></pre></div>
+                        <div style="flex: 39%"><pre><code class="arm" data-trim contenteditable>a(float):
+  push  {r4, lr}
+  mov   r1, #1056964608
+  bl    __aeabi_fmul
+  bl    __aeabi_f2iz
+  pop   {r4, pc}</code></pre></div>
+                    </div>
 
-					<!--<div style="display: flex">-->
-						<!--<div style="flex: 61%"><pre><code class="c++">int    b(float value)-->
-<!--{-->
-    <!--return value * .5f;-->
-<!--}</code></pre></div>-->
-						<!--<div style="flex: 39%"><pre><code class="arm" data-trim contenteditable>b(float):-->
-  <!--push  {r4, lr}-->
-  <!--mov   r1, #1056964608-->
-  <!--bl    __aeabi_fmul-->
-  <!--bl    __aeabi_f2iz-->
-
-
-  <!--pop   {r4, pc}</code></pre></div>-->
-					<!--</div>-->
-
-					<!--<a href="https://godbolt.org/z/aRQruN">godbolt.org/z/aRQruN</a>-->
-				<!--</section>-->
-
-				<section>
-					<div>
-						<code><span style="opacity:.25">…00000000</span><span>00010101</span><span
-								style="opacity:.25">0.000000…
-						</span></code>
-						<span style="font-size: 150%; display: contents; color: green">✓</span>
-					</div>
-
-					<div style="display: flex">
-						<pre style="flex: 85%"><code class="fragment" class="c++">int8_t{42}</code></pre>
-						<div style="flex: 05%"><span class="fragment" style="font-size: 150%">✗</span></div>
-					</div>
-
-					<div style="display: flex">
-						<pre style="flex: 85%"><code class="c++">fixed_point&lt;int8_t, 1>{42}</code></pre>
-						<div style="flex: 05%"><span class="fragment" style="font-size: 150%; color: red">✗</span></div>
-					</div>
-
-					<div style="display: flex">
-						<pre style="flex: 85%"><code class="fragment" class="c++">fixed_point&lt;int, 1>{42}</code></pre>
-						<div style="flex: 05%"><span class="fragment" style="font-size: 150%; color: green">✓</span></div>
-					</div>
-				</section>
-
-				<section>
-					<h3>2.0. Frame the Problem</h3>
-					<div>
-						<span>Question: </span>
-						<span>how do you <em>pronounce</em> 'forty-two'?</span>
-					</div>
-					<div style="opacity:1"><code></code>
-						<span>Answer:</span>
-						<span class="c++" class="fragment"><code class="fragment">fixed_point&lt;int, 1>{42};</code></span>
-					</div>
-				</section>
+                    <div style="display: flex">
+                        <div style="flex: 61%"><pre><code class="c++">int    b(float value)
+{
+    return value * .5f;
+}</code></pre></div>
+                        <div style="flex: 39%"><pre><code class="arm" data-trim contenteditable>b(float):
+  push  {r4, lr}
+  mov   r1, #1056964608
+  bl    __aeabi_fmul
+  bl    __aeabi_f2iz
 
 
+  pop   {r4, pc}</code></pre></div>
+                    </div>
 
+                    <a href="https://godbolt.org/z/aRQruN">godbolt.org/z/aRQruN</a>
+                </section>
 
+                <section style="font-size: 175%">
+                    <div style="display: flex">
+                        <pre style="flex: 83%; box-shadow:none"><code class="c++">int8_t{42}</code></pre>
+                        <img style="flex: 17%; background-color: #00000000" src="small.jpg">
+                    </div>
 
+                    <div style="display: flex" class="fragment">
+                        <pre style="flex: 83%; box-shadow:none"><code class="c++">fixed_point&lt;int8_t, 1>{42}</code></pre>
+                        <img style="flex: 17%; background-color: #00000000" src="medium.jpg">
+                    </div>
 
-				<section>
+                    <div style="display: flex" class="fragment">
+                        <pre style="flex: 83%; box-shadow:none"><code class="c++">fixed_point&lt;int, 1>{42}</code></pre>
+                        <img style="flex: 17%; background-color: #00000000" src="big.jpg">
+                    </div>
+
+                    <div style="display: flex" class="fragment">
+                        <pre style="flex: 83%; box-shadow:none"><code class="c++">fixed_point{42_c}</code></pre>
+                        <img style="flex: 17%; background-color: #00000000" src="huge.jpg">
+                    </div>
+
+                    <a style="font-size: 50%" class="fragment" href="https://godbolt.org/z/8WVLFo">godbolt.org/z/8WVLFo</a>
+                </section>
+
+                <section>
+                    <h3>2.0. Frame the Problem</h3>
+                    <div>
+                        <span>Question: </span>
+                        <span>how do you <em>pronounce</em> 'forty-two'?</span>
+                    </div>
+                    <div style="opacity:1"><code></code>
+                        <span>Answer:</span>
+                        <span class="c++" class="fragment"><code class="fragment">fixed_point{42_c};</code></span>
+                    </div>
+                </section>
+
+                <section>
                     <h3>2.1. The Times They Are a-Changin'</h3>
                     <div><code></code>
                         <span class="fragment">Question: </span>
-                        <span class="fragment">what do you get when you multiply six by nine?</span>
+                        <span class="fragment">how many bits in a megabyte?</span>
                     </div>
 
-                    <aside class="notes">
-                        For the sake of argument, lets say the answer is fifty four.
-                        How does that look when one of the numbers is not what it seems?
-                    </aside>
-				</section>
-				
-                <section>
-                    <div>
-                        <code><span>6</span><span class="fragment">×</span><span class="fragment">9</span></code>
-                    </div>
-                    <div class="fragment">
-                        <code><span>110</span><span class="fragment">×</span><span class="fragment">101</span></code>
-                    </div>
-				</section>
-				
-                <section>
-                    <div>
-                        <code><span>6</span><span>×</span><span>9</span></code>
-                    </div>
-                    <div>
-                        <code><span>11</span><span style="opacity:.25">0</span><span>×</span><span>101</span></code>
+                    <div style="opacity:0"><code></code>
+                        <span>Answer:</span>
                     </div>
                 </section>
-				
+
+                <section data-transition="slide-in fade-out">
+                    <div>
+                        <code><span>1MB</span></code>
+                    </div>
+                    <div>
+                        <code><span class="fragment">1000</span><span class="fragment">×</span><span class="fragment">1000</span></code>
+                    </div>
+                    <div class="fragment">
+                        <code><span>1111101000</span><span class="fragment">×</span><span class="fragment">1111101000</span></code>
+                    </div>
+                    <div style="opacity: 0">
+                        <code><span>=11110100001001000000</span></code>
+                    </div>
+                </section>
+
+                <section data-transition="fade">
+                    <div style="opacity: 0">
+                        <code><span>1MB</span></code>
+                    </div>
+                    <div style="opacity: 0">
+                        <code><span>1000</span><span>×</span><span>1000</span></code>
+                    </div>
+                    <div>
+                        <code><span>1111101000</span><span>×</span><span>1111101000</span></code>
+                    </div>
+                    <div class="fragment">
+                        <code><span>=11110100001001000000</span></code>
+                    </div>
+                </section>
+
+                <section data-transition="fade">
+                    <div style="opacity: 0">
+                        <code><span>1MB</span></code>
+                    </div>
+                    <div style="opacity: 0">
+                        <code><span>1000</span><span>×</span><span>1000</span></code>
+                    </div>
+                    <div>
+                        <code><span style="opacity: .4">1111101</span><span>000</span><span style="opacity: .4">×1111101</span><span>000</span></code>
+                    </div>
+                    <div>
+                        <code><span style="opacity: .4">=11110100001001</span><span>000000</span></code>
+                    </div>
+                </section>
+
+                <section data-transition="fade-in slide-out">
+                    <div style="opacity: 0">
+                        <code><span>1MB</span></code>
+                    </div>
+                    <div style="opacity: 0">
+                        <code><span>1000</span><span>×</span><span>1000</span></code>
+                    </div>
+                    <div>
+                        <code><span>1111101</span><span style="opacity: .4">000×</span><span>1111101</span><span style="opacity: .4">000</span></code>
+                    </div>
+                    <div>
+                        <code><span>=11110100001001</span><span style="opacity: .4">000000</span></code>
+                    </div>
+                </section>
+
+                <section>
+                    <pre><code style="c++">// fixed_point&lt;int, 3>{1000}
+auto k = fixed_point{1000_c};
+
+// fixed_point&lt;int, 6>{1000000}
+auto m = k*k;</code></pre>
+                    <a href="https://godbolt.org/z/K-KzrX">godbolt.org/z/K-KzrX</a>
+                </section>
+
+                <section data-transition="slide-in fade-out">
+                    <h3>2.1. The Times They Are a-Changin'</h3>
+                    <div>
+                        <span>Question: </span>
+                        <span>how many bits in a megabyte?</span>
+                    </div>
+
+                    <div>
+                        <span class="fragment">Answer:</span>
+                        <span class="fragment">7</span><span class="fragment">+</span><span class="fragment">7</span><span class="fragment">=14</span>
+                    </div>
+                </section>
+
+                <section data-transition="fade-in slide-out"
+                         data-background=#ff0000
+                         data-background-transition="zoom">
+                    <h3 style="color:black">2.1. The Times They Are a-Changin'</h3>
+                    <div style="color:black">
+                        <span>Question: </span>
+                        <span>how many bits in a megabyte?</span>
+                    </div>
+
+                    <div>
+                        <span style="color:black">Answer: </span><del>7+7=14</del>
+                    </div>
+                </section>
+
+                <section data-transition="slide-in fade-out">
+                    <div>
+                        <code><span>1MB</span></code>
+                    </div>
+                    <div>
+                        <code><span class="fragment">1000</span><span class="fragment">×</span><span class="fragment">1000</span></code>
+                    </div>
+                    <div>
+                        <code><span class="fragment">=1000000</span></code>
+                    </div>
+                </section>
+
+                <section data-transition="fade">
+                    <div style="opacity: 0;">
+                        <code><span>1MB</span></code>
+                    </div>
+                    <div>
+                        <code><span style="opacity: .4">1</span>000<span style="opacity: .4">×1</span>000</span></code>
+                    </div>
+                    <div>
+                        <code>=<span style="opacity: .4">1</span>000000</code>
+                    </div>
+                </section>
+
+                <section data-transition="fade-in slide-out">
+                    <div style="opacity: 0;">
+                        <code><span>1MB</span></code>
+                    </div>
+                    <div>
+                        <code>1<span style="opacity: .4">000×</span>1<span style="opacity: .4">000</span></code>
+                    </div>
+                    <div>
+                        <code><span style="opacity: .4">=</span>1<span style="opacity: .4">000000</span></code>
+                    </div>
+                </section>
+
+                <section>
+                    <pre><code style="c++">// fixed_point&lt;int, 3, 10>{1000}
+auto k = fixed_point&lt;int, 3, 10>{1000};
+
+// fixed_point&lt;int, 6, 10>{1000000}
+auto m = k*k;</code></pre>
+                    <a href="https://godbolt.org/z/-lKJI4">godbolt.org/z/-lKJI4</a>
+                </section>
+
+                <section data-transition="slide-in fade-out">
+                    <h3>2.1. The Times They Are a-Changin'</h3>
+                    <div>
+                        <span>Question: </span>
+                        <span>how many bits in a megabyte?</span>
+                    </div>
+
+                    <div>
+                        <span class="fragment">Answer:</span>
+                        <span class="fragment">1</span>
+                    </div>
+                </section>
+
+
                 <section>
                     <h3>2.2. Root Planning</h3>
                     <div><code></code>
@@ -534,26 +665,24 @@ private:
                         <span class="fragment">how far does the queen really move in Chess?</span>
                     </div>
 
-                    <aside class="notes">
-                    </aside>
-				</section>
-				
+                    <div style="opacity: 0">
+                        <span>Answer:</span>
+                    </div>
+
+                    <a style="font-size: 75%; opacity: 0" href="https://wandbox.org/permlink/GBY1czkvkZ8jytlS">wandbox.org/permlink/GBY1czkvkZ8jytlS</a>
+                </section>
+
                 <section>
                     <img width="384" height="384" data-src="queen_1.gif" alt="source: chess-poster.com"/>
                     <img width="384" height="384" data-src="Square_root_of_2_triangle.png" alt="source: commons.wikimedia.org/wiki/File:Square_root_of_2_triangle.png"/>
-				</section>
-				
+                </section>
+
                 <section>
                     <div><code style="font-size: 75%">1.414213562373095048801688724209698078569671875…</code></div>
                     <div class="fragment"><code style="font-size: 75%"><span style="opacity:.25">…0</span>01.011010100000100111100110011001<span style="opacity:.25">11111100111011…</span></code></div>
                     <div class="fragment"><code style="font-size: 75%" class="c++">fixed_point&lt;int, -30> r {std::sqrt(2)};</code></div>
+                </section>
 
-                    <aside class="notes">
-                        Like many roots, root two is an irrational numbers
-                        which means that when using a single digital number, it can only be approximated.
-                    </aside>
-				</section>
-				
                 <section>
                     <div><pre><code class="c++">fixed_point&lt;int, -30> a = std::sqrt(2);
 fixed_point&lt;int, -30> b(std::sqrt(2));
@@ -582,18 +711,20 @@ a:
                         Style *c* is widely encouraged. I also quite like *a*.
                         *d* is my preference. `auto` is especially useful with types like `fixed_point`.
                     </aside>
-				</section>
-				
-                <section>
-                    <img width="384" height="384" data-src="queens_distance.jpg" alt="source: chess-poster.com"/>
-                    <a href="https://wandbox.org/permlink/GBY1czkvkZ8jytlS">wandbox.org/permlink/GBY1czkvkZ8jytlS</a>
+                </section>
 
-                    <aside class="notes">
-                        Lets get back to the problem at hand. We wish to measure distance over a chess board.
-                        And diagonals and longer than axials.
-                    </aside>
-				</section>
-				
+                <section>
+                    <img width="384" height="384" data-src="queens_distance.jpg" alt="source: chess-poster.com">
+                    <p style="opacity: 0">(5.8284270763397216796875)</p>
+                    <a style="opacity: 0; font-size: 75%" href="https://wandbox.org/permlink/GBY1czkvkZ8jytlS">wandbox.org/permlink/GBY1czkvkZ8jytlS</a>
+                </section>
+
+                <section>
+                    <img width="384" height="384" data-src="Manhattan_distance.svg" alt="source: https://upload.wikimedia.org/wikipedia/commons/0/08/Manhattan_distance.svg">
+                    <p style="opacity: 0">(5.8284270763397216796875)</p>
+                    <a style="opacity: 0; font-size: 75%" href="https://wandbox.org/permlink/GBY1czkvkZ8jytlS">wandbox.org/permlink/GBY1czkvkZ8jytlS</a>
+                </section>
+
                 <section>
                     <div style="display: flex; font-size: 70%">
                         <div style="flex: 58%"><pre><code class="c++">using Distance = cnl::fixed_point&lt;int, -24>;
@@ -626,25 +757,23 @@ Distance queens_distance(int columns, int rows)
 .L3:
         .word   23726566</code></pre></div>
                     </div>
-
-                    <aside class="notes">
-                        This is a fun little function.
-                        There's a measure of how far you have to travel
-                        along city blocks called the Manhattan distance.
-                        The Queen's distance is not related to that.
-
-                        This function returns the total Euclidean distance
-                        a queen Chess piece has to travel to span the given number of rows and columns.
-
-                        Any time the
-
-                        Note about sqrt: technically not allowed to be a constant expression.
-                        But otherwise, this function can be `constexpr`.
-                    </aside>
                 </section>
-                <!--/section>
 
-				<section-->
+                <section data-background="queens_distance.jpg" data-background-size="1100px">
+                    <div style="color:#EEE; text-shadow:1px 2px 0 #000, -1px 2px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;">
+                        <h3 style="color:#EEE; text-shadow:1px 2px 0 #000, -1px 2px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;"><br/>2.2. Root Planning</h3>
+                        <div><code></code>
+                            <span>Question: </span>
+                            <span>how far does the queen really move in Chess?</span>
+                        </div>
+                        <div>
+                            <span class="fragment">Answer:</span>
+                            <span class="fragment">5.8284270763397216796875</span>
+                        </div>
+                        <a class="fragment" style="font-size: 75%" href="https://wandbox.org/permlink/GBY1czkvkZ8jytlS">wandbox.org/permlink/GBY1czkvkZ8jytlS</a>
+                    </div>
+                </section>
+
 
                 <section>
                     <h3>3.0. Fixing Fixed-point</h3>
@@ -652,20 +781,20 @@ Distance queens_distance(int columns, int rows)
                         <span class="fragment">Question: </span>
                         <span class="fragment">how do you stay in range?</span>
                     </div>
-				</section>
-				
+                </section>
+
                 <section>
                     <pre><code class="c++">auto g = fixed_point&lt;int, -24>{1000};</code></pre>
                     <div class="fragment"><code style="font-size: 75%"><span style="opacity:.25">…00</span><span>01111101</span><span style="opacity:.25">000.000000000000000000000000000000…</span></code></div>
                     <div class="fragment"><code style="font-size: 75%"><span style="opacity:.25">…00011</span><span>11101000.000000000000000000000000</span><span style="opacity:.25">000000…</span></code></div>
-				</section>
-				
+                </section>
+
                 <section>
                     <pre><code class="c++">auto g = fixed_point&lt;int, -24>{1000};</code></pre>
                     <div><code style="font-size: 75%"><span style="opacity:.25">…00</span><span>01111101</span><span style="opacity:.25">000.000000000000000000000000000000…</span></code></div>
                     <div><code style="font-size: 75%"><span style="opacity:.25">…00</span><span style="color: red">011</span><span>11101000.000000000000000000000000</span><span style="opacity:.25">000000…</span></code></div>
                 </section>
-				
+
                 <section>
 						<pre><code class="c++">int main() {
     auto g = cnl::fixed_point&lt;int, -24>{1000};
@@ -680,7 +809,7 @@ Distance queens_distance(int columns, int rows)
                         <a href="https://wandbox.org/permlink/UixSxyf57rYZuU4t">wandbox.org/permlink/UixSxyf57rYZuU4t</a>
                     </div>
                 </section>
-				
+
                 <section>
 						<pre><code class="c++">int main() {
     auto g = cnl::fixed_point&lt;int, -24>{1000};
@@ -695,7 +824,7 @@ Distance queens_distance(int columns, int rows)
                         <a href="https://wandbox.org/permlink/lcxfAV2cKM7qXrpJ">wandbox.org/permlink/lcxfAV2cKM7qXrpJ</a>
                     </div>
                 </section>
-				
+
                 <section>
 						<pre><code class="c++">int main() {
     auto g = cnl::fixed_point&lt;int, -24>{1000};
@@ -709,7 +838,7 @@ Distance queens_distance(int columns, int rows)
 
                         <a href="https://wandbox.org/permlink/8zcxXuqET4OtwrRZ">wandbox.org/permlink/8zcxXuqET4OtwrRZ</a>
                 </section>
-				
+
                 <section>
                     <h3>3.1. Horses for Courses</h3>
                     <div><code></code>
@@ -717,7 +846,7 @@ Distance queens_distance(int columns, int rows)
                         <span class="fragment">when <i>don't</i> you want to catch bugs?</span>
                     </div>
                 </section>
-				
+
                 <section>
                     <h4>How to think about Undefined Behavior</h4>
                     <ul>
@@ -730,7 +859,7 @@ Distance queens_distance(int columns, int rows)
                         <li class="fragment">With optimizer on and UBSan off, your code is fast, but it better be bug free!</li>
                     </ul>
                 </section>
-				
+
                 <section>
                     <h4>Guidelines for sanitizing and optimizing</h4>
                     <ul>
@@ -740,14 +869,14 @@ Distance queens_distance(int columns, int rows)
                         <li class="fragment">In <i>release builds</i> of <i>performance-critical software</i>, don't trap, do optimize</li>
                     </ul>
                 </section>
-				
+
                 <section>
                     <h2>Thank you</h2>
                     <!--a href="mailto:fixed-point@john.mcfarlane.name">fixed-point@john.mcfarlane.name</a-->
                     <a href="mailto:jmcfarla@jaguarlandrover.com">jmcfarla@jaguarlandrover.com</a>
                     <h3>Questions</h3>
                 </section>
-			</div>
+            </div>
 		</div>
 
 		<script src="../lib/js/head.min.js"></script>
