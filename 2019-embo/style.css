@@ -9,3 +9,7 @@
 .range_error_result {
     font-size: 60% !important;
 }
+
+.witw {
+    visibility: hidden;
+}
