@@ -13,3 +13,7 @@
 .witw {
     visibility: hidden;
 }
+
+.significant {
+    background-color: #fff4;
+}
