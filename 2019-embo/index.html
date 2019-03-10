@@ -510,22 +510,22 @@ auto a = fixed_point{forty_two};
                 <section style="font-size: 150%">
                     <div style="display: flex">
                         <pre style="flex: 82%; box-shadow:none"><code class="c++">int8_t{42}</code></pre>
-                        <div style="flex: 18%"><img style="background-color: #00000000;" src="small.jpg"></div>
+                        <div style="flex: 18%"><img style="background-color: #00000000;" src="small.jpg" alt="small brain (meme)"></div>
                     </div>
 
                     <div style="display: flex" class="fragment">
                         <pre style="flex: 82%; box-shadow:none"><code class="c++">fixed_point&lt;int8_t, 1>{42}</code></pre>
-                        <div style="flex: 18%"><img style="flex: 10%; background-color: #00000000;" src="medium.jpg"></div>
+                        <div style="flex: 18%"><img style="flex: 10%; background-color: #00000000;" src="medium.jpg" alt="medium brain (meme)"></div>
                     </div>
 
                     <div style="display: flex" class="fragment">
                         <pre style="flex: 82%; box-shadow:none"><code class="c++">fixed_point&lt;int, 1>{42}</code></pre>
-                        <div style="flex: 18%"><img style="flex: 10%; background-color: #00000000;" src="big.jpg"></div>
+                        <div style="flex: 18%"><img style="flex: 10%; background-color: #00000000;" src="big.jpg" alt="big brain (meme)"></div>
                     </div>
 
                     <div style="display: flex" class="fragment">
                         <pre style="flex: 82%; box-shadow:none"><code class="c++">fixed_point{42_c}</code></pre>
-                        <div style="flex: 18%"><img style="flex: 10%; background-color: #00000000;" src="huge.jpg"></div>
+                        <div style="flex: 18%"><img style="flex: 10%; background-color: #00000000;" src="huge.jpg" alt="huge brain (meme)"></div>
                     </div>
                 </section>
 
@@ -614,7 +614,7 @@ auto a = fixed_point{forty_two};
                 </section>
 
                 <section>
-                    <pre><code style="c++">// fixed_point&lt;int, 3>{1000}
+                    <pre><code class="c++">// fixed_point&lt;int, 3>{1000}
 auto k = fixed_point{1000_c};
 
 // fixed_point&lt;int, 6>{1000000}
@@ -684,7 +684,7 @@ auto m = k*k;</code></pre>
                 </section>
 
                 <section>
-                    <pre><code style="c++">// fixed_point&lt;int, 3, 10>{1000}
+                    <pre><code class="c++">// fixed_point&lt;int, 3, 10>{1000}
 auto k = fixed_point&lt;int, 3, 10>{1000};
 
 // fixed_point&lt;int, 6, 10>{1000000}
@@ -721,8 +721,11 @@ auto m = k*k;</code></pre>
                 </section>
 
                 <section>
-                    <img width="384" height="384" data-src="queen_1.gif" alt="source: chess-poster.com"/>
-                    <img width="384" height="384" data-src="Square_root_of_2_triangle.png" alt="source: commons.wikimedia.org/wiki/File:Square_root_of_2_triangle.png"/>
+                    <!--source: chess-poster.com-->
+                    <img width="384" height="384" src="queen_1.gif" alt="directions a queen can move in chess">
+
+                    <!--source: commons.wikimedia.org/wiki/File:Square_root_of_2_triangle.png-->
+                    <img width="384" height="384" src="Square_root_of_2_triangle.png" alt="illustration of root two as a diagonal"/>
                 </section>
 
                 <section>
@@ -925,6 +928,7 @@ cout &lt;&lt; overflow_integer&lt;short>(ms);</code></pre>
                             <br/>
                             <a style="font-size: 75%" href="https://wandbox.org/permlink/6jhFrOu7IzVV1yPt">wandbox.org/permlink/6jhFrOu7IzVV1yPt</a>
                         </div>
+                    </div>
                 </section>
 
                 <section data-transition="fade-in slide-out">
@@ -952,6 +956,7 @@ cout &lt;&lt; overflow_integer&lt;short>(ms);</code></pre>
                             <br/>
                             <a class="fragment" style="font-size: 75%" href="https://wandbox.org/permlink/6jhFrOu7IzVV1yPt">wandbox.org/permlink/6jhFrOu7IzVV1yPt</a>
                         </div>
+                    </div>
                 </section>
 
                 <section>
@@ -987,7 +992,7 @@ namespace cnl {
 }</code></pre>
                     <div style="font-size: 75%">
                         <div class="fragment">
-                            <code>1111101000<span style="opacity:.35"><sup>4</sup></code>
+                            <code>1111101000<span style="opacity:.35"><sup>4</sup></span></code>
                         </div>
                         <div class="fragment">
                             <code><span style="opacity:.35">=</span>11110100001001000000<sup style="opacity:.35">2</sup></code>
