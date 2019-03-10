@@ -887,15 +887,15 @@ auto root_32 = root_2 * 4;</code></pre>
                 <section data-transition="slide-in fade-out">
                     <pre style="font-size: 75%"><code class="c++">unsigned mu = 0;
 cout &lt;&lt; (mu-1);</code></pre>
-                    <p style="font-size: 65%" class="fragment"><code>4294967295</code></p>
+                    <p class="fragment range_error_result"><code>4294967295</code></p>
 
                     <pre style="font-size: 75%" class="fragment"><code class="c++">int s = 1;
 cout &lt;&lt; (s &lt;&lt; 31);</code></pre>
-                    <p style="font-size: 65%" class="fragment"><code>-2147483648</code></p>
+                    <p class="fragment range_error_result"><code>-2147483648</code></p>
 
                     <pre style="font-size: 75%" class="fragment"><code class="c++">int ms = 100000;
 cout &lt;&lt; short(ms);</code></pre>
-                    <p style="font-size: 65%" class="fragment"><code>-31072</code></p>
+                    <p class="fragment range_error_result"><code>-31072</code></p>
 
                     <br/>
                     <a class="fragment" style="font-size: 75%" href="https://wandbox.org/permlink/yKUMQNIRr9XZMVBU">wandbox.org/permlink/yKUMQNIRr9XZMVBU</a>
@@ -915,15 +915,15 @@ namespace cnl {
                         <div style="position:absolute; top:0; visibility: hidden">
                             <pre style="font-size: 75%"><code class="c++">overflow_integer&lt;unsigned> mu = 0;
 cout &lt;&lt; (mu-1);</code></pre>
-                            <p style="font-size: 65%"><code>runtime error: execution reached an unreachable program point</code></p>
+                            <p class="range_error_result"><code>runtime error: execution reached an unreachable program point</code></p>
 
                             <pre style="font-size: 75%"><code class="c++">overflow_integer&lt;int> s = 1;
 cout &lt;&lt; (s&lt;&lt;31);</code></pre>
-                            <p style="font-size: 65%"><code>runtime error: execution reached an unreachable program point</code></p>
+                            <p class="range_error_result"><code>runtime error: execution reached an unreachable program point</code></p>
 
                             <pre style="font-size: 75%"><code class="c++">int ms = 100000;
 cout &lt;&lt; overflow_integer&lt;short>(ms);</code></pre>
-                            <p style="font-size: 65%"><code>runtime error: execution reached an unreachable program point</code></p>
+                            <p class="range_error_result"><code>runtime error: execution reached an unreachable program point</code></p>
 
                             <br/>
                             <a style="font-size: 75%" href="https://wandbox.org/permlink/6jhFrOu7IzVV1yPt">wandbox.org/permlink/6jhFrOu7IzVV1yPt</a>
@@ -943,15 +943,15 @@ namespace cnl {
                         <div style="position:absolute; top:0">
                             <pre style="font-size: 75%"><code class="c++">overflow_integer&lt;unsigned> mu = 0;
 cout &lt;&lt; (mu-1);</code></pre>
-                            <p class="fragment" style="font-size: 65%"><code>runtime error: execution reached an unreachable program point</code></p>
+                            <p class="fragment range_error_result"><code>runtime error: execution reached an unreachable program point</code></p>
 
                             <pre class="fragment" style="font-size: 75%"><code class="c++">overflow_integer&lt;int> s = 1;
 cout &lt;&lt; (s&lt;&lt;31);</code></pre>
-                            <p class="fragment" style="font-size: 65%"><code>runtime error: execution reached an unreachable program point</code></p>
+                            <p class="fragment range_error_result"><code>runtime error: execution reached an unreachable program point</code></p>
 
                             <pre class="fragment" style="font-size: 75%"><code class="c++">int ms = 100000;
 cout &lt;&lt; overflow_integer&lt;short>(ms);</code></pre>
-                            <p class="fragment" style="font-size: 65%"><code>runtime error: execution reached an unreachable program point</code></p>
+                            <p class="fragment range_error_result"><code>runtime error: execution reached an unreachable program point</code></p>
 
                             <br/>
                             <a class="fragment" style="font-size: 75%" href="https://wandbox.org/permlink/6jhFrOu7IzVV1yPt">wandbox.org/permlink/6jhFrOu7IzVV1yPt</a>
