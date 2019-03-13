@@ -820,7 +820,7 @@ Distance queens_distance(int columns, int rows)
                     </div>
                     <br/>
 
-                    <pre class="fragment"><code class="c++">          auto root_2 = cnl::sqrt2&lt;fixed_point&lt;int, -30>>;</code></pre>
+                    <pre class="fragment"><code class="c++">          auto root_2 = sqrt2&lt;fixed_point&lt;int, -30>>;</code></pre>
                     <div class="fragment">
                         <code style="font-size: 75%"><span class="implicit">…000</span>01.011010100000100111100110011001<span class="fragment" style="color:orange">0000000…</span></code>
                     </div>
@@ -849,7 +849,7 @@ constexpr auto root_32 = root_2 * 4;
                     </div>
                     <br/>
 
-                    <pre><code class="c++">constexpr auto root_2 = cnl::sqrt2&lt;fixed_point&lt;int, -30>>;</code></pre>
+                    <pre><code class="c++">constexpr auto root_2 = sqrt2&lt;fixed_point&lt;int, -30>>;</code></pre>
                     <div>
                         <code style="font-size: 75%"><span class="implicit">…000</span>01.011010100000100111100110011001<span class="implicit imprecise">0000000…</span></code>
                     </div>
@@ -877,7 +877,7 @@ constexpr auto root_32 = root_2 * 4;
 &nbsp;   -Wall -Wextra -Werror
 &nbsp;   -fsanitize=address,undefined
     all_your_source_files.cpp</code></pre>
-                    <pre class="fragment"><code class="c++">auto root_2 = cnl::sqrt2&lt;fixed_point&lt;int, -30>>;
+                    <pre class="fragment"><code class="c++">auto root_2 = sqrt2&lt;fixed_point&lt;int, -30>>;
 auto root_32 = root_2 * 4;</code></pre>
                     <pre class="fragment"><code class="nohighlight">cnl.h:2903:51: runtime error: signed integer overflow:
 1518500249 * 4 cannot be represented in type 'int'</code></pre>
@@ -1144,7 +1144,7 @@ auto t = m*m;</code></pre>
                 </section>
 
                 <section>
-                    <pre><code class="c++">auto root_2 = cnl::sqrt2&lt;fixed_point&lt;int, -30>>;</code></pre>
+                    <pre><code class="c++">auto root_2 = sqrt2&lt;fixed_point&lt;int, -30>>;</code></pre>
                     <div>
                         <code style="font-size: 75%"><span class="implicit">…000</span>01.011010100000100111100110011001<span class="implicit">0000000…</span></code>
                     </div>
