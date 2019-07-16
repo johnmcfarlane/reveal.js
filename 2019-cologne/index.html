@@ -1010,15 +1010,19 @@ class wide_integer;</code></pre></div>
 class power;</code></pre></div>
 					<div><pre><code class="c++">template&lt;class Rep, class Scale>
 class scaled_integer;</code></pre></div>
-					<div><pre><code class="c++">scaled_integer&lt;int16_t, power&lt;-16>> q15_16{13.75};</code></pre></div>
+					<div><pre><code class="c++">scaled_integer&lt;int32_t, power&lt;-16>> q15_16{13.75};</code></pre></div>
 				</section>
 				<section>
 					<h3>Quasi-exact Division</h3>
 					<p>Subject of P1368R1</p>
-					<div><pre><code class="c++">template&lt;class Rep>
-typename quasi_exact;</code></pre></div>
-					<p>Thin wrapper over <code>scaled_integer</code></p>
-					<p>Provides alternative division behavior</p>
+					<div><pre><code class="c++">template&lt;int Exponent, int Radix=2>
+class quasi_exact_division_integer;</code></pre></div>
+					<ul style="font-size: 75%">
+						<li>Thin wrapper over <code>scaled_integer</code></li>
+						<li>Provides alternative <code>operator/</code> behavior</li>
+						<li>Deletes <code>operator%</code></li>
+					</ul>
+					<p></p>
 				</section>
 				<section>
 					<h3>Rounding</h3>
@@ -1052,21 +1056,20 @@ using static_integer =
 				<section>
 					<h3>Composite Type</h3>
 					<p><code>static_number</code> is similar to P0106's <code>negatable</code>.</p>
-					<div><pre><code class="c++">template&lt;
+					<div><pre style="font-size: 50%"><code class="c++">template&lt;
     int Digits,
     int Exponent = 0,
     class RoundingTag = nearest_tag,
     class OverflowTag = contract_tag,
     class Narrowest = int>
 using static_number =
-    quasi_exact_integer&lt;
-      scaled_integer&lt;
-        static_integer&lt;
-          Digits,
-          RoundingTag,
-          OverflowTag,
-          Narrowest>,
-        power<Exponent, 2>>;</code></pre></div>
+    quasi_exact_division_integer&lt;
+      static_integer&lt;
+        Digits,
+        RoundingTag,
+        OverflowTag,
+        Narrowest>,
+      power&lt;Exponent, 2>>;</code></pre></div>
 				</section>
 			</div>
 		</div>
